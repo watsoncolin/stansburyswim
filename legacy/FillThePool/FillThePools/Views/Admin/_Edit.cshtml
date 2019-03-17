@@ -1,0 +1,151 @@
+﻿@model FillThePool.Web.ViewModels.AdminUserEditViewModel
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id = "editForm"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>User</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.User.UserId)
+		
+		
+	    <div class="row">
+		    <div class="col-md-5">
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.FirstName)
+						@Html.EditorFor(model => model.User.FirstName)
+						@Html.ValidationMessageFor(model => model.User.FirstName)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.LastName)
+						@Html.EditorFor(model => model.User.LastName)
+						@Html.ValidationMessageFor(model => model.User.LastName)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.UserName)
+						@Html.DisplayFor(model => model.User.UserName)
+						@Html.HiddenFor(model => model.User.UserName)
+						@Html.ValidationMessageFor(model => model.User.UserName)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.Email)
+						@Html.EditorFor(model => model.User.Email)
+						@Html.ValidationMessageFor(model => model.User.Email)
+				</div>
+
+			    <div class="form-group">
+				    @Html.LabelFor(model => model.User.Phone)
+					    @Html.EditorFor(model => model.User.Phone)
+					    @Html.ValidationMessageFor(model => model.User.Phone)
+			    </div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.MobilePhone)
+						@Html.EditorFor(model => model.User.MobilePhone)
+						@Html.ValidationMessageFor(model => model.User.MobilePhone)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.MobileCarrier)
+						@Html.EditorFor(model => model.User.MobileCarrier)
+						@Html.ValidationMessageFor(model => model.User.MobileCarrier)
+				</div>
+		    </div>
+		    <div class="col-md-5 col-md-offset-1">
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.Address)
+						@Html.EditorFor(model => model.User.Address)
+						@Html.ValidationMessageFor(model => model.User.Address)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.Address2)
+						@Html.EditorFor(model => model.User.Address2)
+						@Html.ValidationMessageFor(model => model.User.Address2)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.City)
+						@Html.EditorFor(model => model.User.City)
+						@Html.ValidationMessageFor(model => model.User.City)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.State)
+						@Html.EditorFor(model => model.User.State)
+						@Html.ValidationMessageFor(model => model.User.State)
+				
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.Zip)
+						@Html.EditorFor(model => model.User.Zip)
+						@Html.ValidationMessageFor(model => model.User.Zip)
+				</div>
+
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.PrivateRegistration)
+					@Html.EditorFor(model => model.User.PrivateRegistration)
+					@Html.ValidationMessageFor(model => model.User.PrivateRegistration)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.User.Referral)
+					@Html.EditorFor(model => model.User.Referral)
+					@Html.ValidationMessageFor(model => model.User.Referral)
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.Role)
+					@Html.EnumDropDownListFor(model => model.Role)
+					@Html.ValidationMessageFor(model => model.Role)
+				</div>
+
+
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input id="submit" type="button" value="Save" class="btn btn-default" />
+					</div>
+				</div>
+
+
+						@Html.HiddenFor(model => model.User.CreatedOn)
+						@Html.HiddenFor(model => model.User.ModifiedOn)
+		    </div>
+	    </div>
+		
+
+    </div>
+}
+
+<script>
+
+	$(function() {
+
+		$("input").addClass("form-control");
+		$("input[type='checkbox']").removeClass("form-control");
+		$("#submit").click(function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "/Admin/Edit/",
+				data: $("#editForm").serialize(), // serializes the form's elements.
+				success: function (data) {
+					$("#editModal").modal("toggle");
+					RefreshCurrentUser();
+				}
+			});
+
+
+		});
+	});
+</script>

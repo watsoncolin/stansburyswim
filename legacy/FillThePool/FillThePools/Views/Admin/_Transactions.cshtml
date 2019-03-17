@@ -1,0 +1,67 @@
+﻿@model IEnumerable<FillThePool.Web.ViewModels.TransactionViewModel>
+		   
+Add a new transaction
+<div class="row">
+	<div class="col-md-6">
+		<form class="form" role="form" id="addTransactionForm">
+			<input hidden="true" name="UserId" id="UserId" value="@ViewBag.UserId"/>
+			<div class="form-group">
+				<label for="Type">Type</label>
+				<select class="form-control" id="Type" name="Type">
+					<option>Purchased</option>
+					<option>Scheduled</option>
+					<option>Refund</option>
+				</select>
+
+			</div>
+			<div class="form-group">
+				<label for="Amount">Amount</label>
+				<div class="input-group">
+					<span class="input-group-addon">$</span>
+					<input type="text" class="form-control" id="Amount" name="Amount">
+					<span class="input-group-addon">.00</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="credit">Lesson Credit</label>
+				<input type="number" class="form-control" id="LessonCredit" name="LessonCredit">
+			</div>
+			<input id="submitTransaction" type="button" value="Save" class="btn btn-default" />
+		</form>
+	</div>
+	
+	<div class="col-md-6" id="transactions">
+		<ul>
+			@foreach (var transaction in Model.OrderByDescending(t => t.CreatedOn))
+			{
+				<li>@transaction.Description</li>
+			}
+		</ul>
+
+	</div>
+</div>
+	
+<script>
+
+	$(function() {
+
+		var userId = @ViewBag.UserId;
+
+		$("#submitTransaction").click(function() {
+			$.ajax({
+				type: "POST",
+				url: "/Admin/Transactions/" + userId,
+				data: $("#addTransactionForm").serialize(), // serializes the form's elements.
+				success: function (data) {
+					$.get("/Admin/Transactions/" + userId, function (data) {
+						$("#transactionModal .modal-content").html(data);
+					});
+				}
+			});
+
+		});
+
+	});
+
+</script>

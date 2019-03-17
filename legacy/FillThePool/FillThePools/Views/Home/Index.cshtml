@@ -1,0 +1,438 @@
+﻿@model FillThePool.Web.ViewModels.HomeViewModel
+@{
+	ViewBag.Title = "Home Page";
+}
+
+@section styles{
+	<style>
+		.container {
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+}
+
+<script type="text/javascript">
+	var index = 0;
+	var paypalComplete = @(ViewBag.PayPalComplete != null && ViewBag.PayPalComplete ? "true" : "false");
+	var tour = @(ViewBag.Tour != null && ViewBag.Tour ? "true" : "false");
+
+	$(document).ready(function(){
+		if (tour){
+			GetLessonBalance();
+			StartTour();
+		}
+	});
+
+
+	function StartTour() {
+		$("iframe").hide();
+		$("#tourModal").show();
+		$('#tourModal').modal();
+		$("#step1").show();
+		$("#step2").hide();
+		$("#step3").hide();
+		$("#step4").hide();
+
+		if (paypalComplete)
+		{
+			$(".modal-title").text("You are ready!");
+			$("#step1").hide();
+			$("#step2").hide();
+			$("#step3").hide();
+			$("#step4").show();
+			index = 3;
+		}
+		else{
+			//GetStudents();
+		}
+
+	}
+
+	function GetStudents() {
+		$.get("/Home/Students/", function (data) {
+			$("#tourBody").html(data);
+		});
+	}
+
+	function GetTransaction() {
+		$.get("/Home/Transaction/", function (data) {
+			$("#tourBody").html(data);
+		});
+	}
+
+	function AddStudent() {
+		$.ajax({
+			url: "/api/Student/PostStudent",
+			type: "POST",
+			data: JSON.stringify({
+				Name: $("#studentName").val(),
+				BirthDate: $("#birthDate").val(),
+				Ability: $("#ability").val(),
+				Notes: $("#notes").val()
+			}),
+			contentType: "application/json",
+			success: function () {
+				GetStudents();
+			}
+		});
+	}
+
+	function Continue() {
+		index++;
+		$("#Continue").attr("data-index", index);
+
+		if (index == 1){
+			$(".modal-title").text("Add your students.");
+			$("#step1").hide();
+			$("#step2").show();
+			$("#step3").hide();
+			$("#step4").hide();
+		}
+		else if (index == 2)
+		{
+			$(".modal-title").text("Purchase lesson credits.");
+			$("#step1").hide();
+			$("#step2").hide();
+			$("#step3").show();
+			$("#step4").hide();
+		}
+		else if (index == 3)
+		{
+			$(".modal-title").text("You are ready!");
+			$("#step1").hide();
+			$("#step2").hide();
+			$("#step3").hide();
+			$("#step4").show();
+		}
+		else if (index == 4)
+		{
+			window.location = "/Lesson";
+		}
+	}
+
+
+	$(function () {
+
+		var Student = function()
+		{
+			this.StudentId = ko.observable("@Model.Student.StudentId");
+			this.Name = ko.observable("@Model.Student.Name");
+			this.Notes = ko.observable("@Model.Student.Notes");
+			this.Ability = ko.observable("@Model.Student.Ability");
+			this.BirthdDate = ko.observable("@Model.Student.BirthDate");
+		};
+
+
+		var ViewModel = function () {
+			this.model = Student;
+			this.students = ko.observableArray(@Html.Raw(Model.StudentsJson));
+			this.errorMessage = ko.observable();
+			this.save = function(){
+				var student = ko.toJS(this.model);
+				studentDataService.save(student).done(function(saveResponse){
+					if (saveResponse.studentId){
+						studentDataService.get().done(function(getResponse){
+							vm.students(JSON.parse(getResponse));
+							//reset the form values
+							$("#studentName").val("");
+							$("#birthDate").val("");
+							$("#notes").val("");
+							$("#ability").val("");
+						});;
+					}
+				});
+			};
+		};
+
+		var vm = new ViewModel();
+
+		ko.applyBindings(vm);
+	});
+
+	$(document).ready(function () {
+		$(".radios").change(function () {
+			$("#total").text("$" + $('input[name=lessonRadio]:checked').val() + ".00");
+			$("#Amount").val($('input[name=lessonRadio]:checked').val());
+		});
+
+		
+		$("#promoCodeInput").change(function () {
+			if ($(this).val() == "splash") {
+				$(".lessonCount").css("text-decoration", "line-through");
+				$(".lessonCount").css("color", "red");
+
+				$("#lessonCount12").after("<span style='padding: 0 5px;' class='bg-success'>13</span>");
+				$("#lessonCount30").after("<span style='padding: 0 5px;' class='bg-success'>33</span>");
+
+				$("#lessonBonus12").after("<span style='padding: 0 5px;' class='bg-success'>+1 Bonus Lessons</span>");
+				$("#lessonBonus30").after("<span style='padding: 0 5px;' class='bg-success'>+3 Bonus Lessons</span>");
+			}
+			$("#PromoCode").val($(this).val());
+		});
+
+
+		$("#total").text("$" + $('input[name=lessonRadio]:checked').val() + ".00");
+		$("#Amount").val($('input[name=lessonRadio]:checked').val());
+
+		$("#buy").click(function () {
+			$.ajax({
+				url: "/api/Transaction/CreatePayPalTransaction/",
+				type: "POST",
+				data: JSON.stringify({ Description: "Buying " + ($('#Amount').val() / 20) + " Lessons", Amount: $('#Amount').val() }),
+				contentType: "application/json",
+				success: function (data) {
+					window.location = data;
+				}
+			});
+		});
+	});
+
+
+	function GetLessonBalance() {
+		$.get("/api/TransactionAPI/Balance/", function (data) {
+			$("#LessonBalance").html(data);
+		});
+	}
+
+
+
+
+
+</script>
+
+<div class="modal fade" style="display: none;" id="tourModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Welcome! Thanks for signing up.</h4>
+			</div>
+			<div class="modal-body">
+				<div id="tourBody">
+					<div id="step1">
+						This tour will walk you through:
+						<ul>
+							<li>Adding your students</li>
+							<li>Purchasing Credits</li>
+						</ul>
+					</div>
+					<div id="step2">
+						<div class="row">
+							<div class="col-md-3">
+
+								<label>Students:</label>
+								<ul data-bind="foreach: students">
+									<li>
+										<div>
+											<span data-bind="text: name"></span>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-9">
+								<div class="form-group">
+
+									<label for="studentName">First Name</label>
+									<input type="text" class="form-control" id="studentName" placeholder="First Name" data-bind="value: model.Name" autofocus required>
+								</div>
+								<div class="form-group">
+									<label for="birthDate">Birth Date</label>
+									<input type="text" class="form-control" id="birthDate" placeholder="Birth Date" data-bind="value: model.BirthDate">
+								</div>
+								<div class="form-group">
+									<label for="ability">Ability</label>
+									<input type="text" class="form-control" id="ability" placeholder="Ability" data-bind="value: model.Ability">
+								</div>
+								<div class="form-group">
+									<label for="notes">Notes</label>
+									<input type="text" class="form-control" id="notes" placeholder="Notes" data-bind="value: model.Notes">
+								</div>
+
+								<button type="submit" class="btn btn-default" data-bind="click: save">Add</button>
+
+								<div id="error" data-bind="text: errorMessage">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="step3">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								Available Credits <span class="badge" id="LessonBalance">0</span>
+							</div>
+							<div class="panel-body" id="Purchase">
+								<div class="col-md-12">
+									<div class="radio">
+										<label>
+											<input type="radio" name="lessonRadio" id="optionsRadios1" value="15" checked class="radios">
+											Add 1 Lesson $15
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="lessonRadio" id="optionsRadios2" value="130" class="radios">
+											Add <div style="display: inline" class="lessonCount" id="lessonCount12">10</div>  Lessons $130
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="lessonRadio" id="optionsRadios3" value="300" class="radios">
+											Add <div style="display: inline" class="lessonCount" id="lessonCount30">30</div> Lessons  $300
+										</label>
+									</div>
+					
+									<div>
+										<label for="promoCodeInput">Promo Code</label>
+										<input type="text" id="promoCodeInput" class="form-control"/>
+									</div>
+
+									<div><h4>Total:<span class="label label-success" id="total"></span></h4></div>
+									@using (Html.BeginForm("Index", "Transaction"))
+									{
+										@Html.AntiForgeryToken()
+										@Html.ValidationSummary(true)
+
+										<input style="display:none" name="Amount" id="Amount" />
+										<input style="display:none" name="PromoCode" id="PromoCode" type="text" />
+										<button type="submit" id="buy" class="btn btn-default">Purchase Credits</button>
+
+									}
+
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+					<div id="step4">
+						You are ready to schedule a lesson.
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-success" id="Continue" data-index="0" onclick="Continue()">Continue</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+<div class="row visible-sm visible-md visible-lg" style="padding-left: -15px; padding-right:-15px;">
+	<div class="col-md-12" style="width: 100%; padding:0">
+		<div class="carousel slide" id="theCarousel" data-interval="4000" style="height: 430px; padding: 10px 0;">
+			<!-- Indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#theCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#theCarousel" data-slide-to="1"></li>
+				<li data-target="#theCarousel" data-slide-to="2"></li>
+				<li data-target="#theCarousel" data-slide-to="3"></li>
+			</ol>
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="col-md-8 center-block">
+						<p>
+							<iframe id="ytplayer" type="text/html" width="500" height="360"
+							        src="https://www.youtube.com/embed/P4UDQ3vm10k?rel=0"
+							        frameborder="0" allowfullscreen></iframe>
+							<br/>
+							Just watch 25-month old Brilya go!
+						</p>
+					</div>
+					<div class="col-md-4">
+						<h1>Warm 90&deg; Water</h1>
+						<p class="center-block">
+							<br />
+
+							<strong>
+								At that temperature, everyone can enjoy a safe, comfortable and fun water experience.
+							</strong>
+						</p>
+					</div>
+				</div>
+				<div class="item">
+					<div class="col-md-8 center-block">
+						<img src="/images/img1.jpg" alt="Swim 1" class="thumbnail img-responsive">
+					</div>
+					<div class="col-md-4">
+						<p style="color: black" class="center-block">
+							<h1>Private Instruction</h1>
+							<br />
+							<strong>
+								We start at the child's level and tailor each lesson to maximize progress.
+							</strong>
+						</p>
+					</div>
+				</div>
+				<div class="item">
+					<div class="col-md-8 center-block">
+						<img src="/images/img2.jpg" alt="Kids Swim 1" class="thumbnail img-responsive">
+					</div>
+					<div class="col-md-4">
+						<p style="color: black" class="center-block">
+							<h1>Affordable Pricing</h1>
+							<br />
+
+							<strong>
+								At less that half the price of comparable Salt Lake City programs, we are sure to fit your budget.
+							</strong>
+						</p>
+					</div>
+				</div>
+				<div class="item">
+					<div class="col-md-8 center-block">
+						<img src="/images/img3.jpg" alt="Kids Shouting" class="thumbnail img-responsive">
+					</div>
+					<div class="col-md-4">
+						<p style="color: black" class="center-block">
+							<h1>Better Results</h1>
+							<br />
+							<strong>
+								Come observe our lessons.  Talk with the parents and kids.  And then, try it for yourself!
+							</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<a class="left carousel-control" href="#theCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+			<a class="right carousel-control" href="#theCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+		</div>
+	</div>
+	<!-- /.carousel -->
+</div>
+<div class="row visible-xs">
+	<div class="col-xs-12" style="padding:0">
+		<section class="well col-xs-12" id="mobile-main">
+			<iframe id="ytplayer" type="text/html" style="width:100%; min-height: 200px" src="https://www.youtube.com/embed/P4UDQ3vm10k" frameborder="0" allowfullscreen></iframe>
+			<p>
+				<h2>Warm 90&deg Water</h2>
+				At that temperature, everyone can enjoy a safe, comfortable and fun water experience.
+			</p>
+			<p>
+				<h1>Private Instruction</h1>
+				<br />
+				<strong>
+					We start at the child's level and tailor each lesson to maximize progress.
+				</strong>
+			</p>
+			<p>
+				<h1>Affordable Pricing</h1>
+				<br />
+
+				<strong>
+					At less that half the price of comparable Salt Lake City programs, we are sure to fit your budget.
+				</strong>
+			</p>
+			<p>
+				<h1>Better Results</h1>
+				<br />
+				<strong>
+					Come observe our lessons.  Talk with the parents and kids.  And then, try it for yourself!
+				</strong>
+			</p>
+		</section>
+	</div>
+</div>

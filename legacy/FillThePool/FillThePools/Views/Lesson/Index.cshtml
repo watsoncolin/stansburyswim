@@ -1,0 +1,279 @@
+﻿@model FillThePool.Web.ViewModels.ScheduleViewModel
+@{
+	ViewBag.Title = "Reserve Lessons";
+}
+
+
+<h2>Reserve Lessons</h2>
+<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Select a date:
+				<input id="datepicker" placeholder="Select a Date">
+				Lessons <span class="badge" id="LessonBalance"></span>
+			</div>
+			<div class="panel-body" id="schedule">
+				Loading...
+			</div>
+			@if (Model.CanEdit)
+			{
+				<div class="row">
+					<div class="col-md-6">
+						<h3>Add a new lesson</h3>
+						<form id="addLesson">
+							<div class="form-group">
+								<div class="bootstrap-timepicker">
+									<label for="newLessonTime">Time</label>
+									<input id="newLessonTime" type="text" class="form-control" style="z-index: 0">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lane">Select Instructor</label>
+								<select id="lane" class="form-control">
+									<option>Garrett</option>
+									<option>Kenna</option>
+									<option>Julia</option>
+									<option>Tajia</option>
+									<option>Ryan</option>
+									<option>Sarah</option>
+									<option>Andrew</option>
+									<option>Cassandra</option>
+									<option>Kirsti</option>
+									<option>Kallie</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<div class="bootstrap-timepicker">
+									<label for="newLessonDuration">Duration</label>
+									<input id="newLessonDuration" class="form-control" value="20" type="number" min="5" style="width: 60px; z-index: 0"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<button type="button" id="addNewLesson" class="btn btn-info">Add a lesson</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			}
+
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Upcoming Lessons</h3>
+			</div>
+			<div class="panel-body" id="upcomingLessons">
+				Loading...
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="OutOfCredits">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Out of lesson credits</h4>
+			</div>
+			<div class="modal-body">
+				<p>Looks like you're out of lesson credits <a href="/Transaction/">Buy More Credits</a></p>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<script>
+
+	var dates = @Model.AvailableDatesJSON;
+
+
+
+	$(function () {
+		$("#datepicker").datepicker();
+		var tomorrow = new Date();
+		tomorrow.setDate(tomorrow.getDate()+1);
+		$("#datepicker").datepicker('setDate', tomorrow);
+
+		setInterval(function(){
+			$("[data-month]").find("a").addClass("unavailable");
+			$.each(dates, function(key, value){
+				var currentDate = new Date(value);
+				currentDate.setHours(currentDate.getHours() + 6);
+				var days = $("[data-month='" + currentDate.getMonth() +"']");
+				$.each(days, function(key2, value2){
+					if ($(value2).attr("data-year") == currentDate.getFullYear())
+					{
+						//add back utc offset fix this later
+						if ($(value2).find("a").text() == currentDate.getDate()){
+							$(value2).find("a").removeClass("unavailable");
+							$(value2).find("a").addClass("available");
+						}
+					}
+				});
+			});
+		}, 100);
+	});
+
+
+	$(document).ready(function () {
+		$('#newLessonTime').timepicker();
+
+		@if (Model.CanEdit)
+				{
+<text>
+		AddAdminButtons();
+		$("#addNewLesson").click(function () {
+			var start = new Date($("#datepicker").val());
+			start.setHours(parseInt($("#newLessonTime").val().substring(0, $("#newLessonTime").val().indexOf(":"))));
+			start.setMinutes(parseInt($("#newLessonTime").val().substring($("#newLessonTime").val().indexOf(":") + 1)));
+
+			if ($("#newLessonTime").val().indexOf("PM") > 0 && start.getHours() !== 12) {
+				start.setHours(start.getHours() + 12);
+			}
+
+			var end = new Date(start.toString());
+			end.setMinutes(start.getMinutes() + parseInt($("#newLessonDuration").val()));
+
+			$.ajax({
+				url: "/api/schedule/",
+				type: "POST",
+				data: JSON.stringify({ Start: start.toLocaleString(), End: end.toLocaleString(), Lane: $("#lane").val() }),
+				contentType: "application/json",
+				success: function (data) {
+					RefreshSchedule();
+					addBindings();
+				}
+			});
+
+
+		});
+		</text>
+			}
+
+
+		RefreshUpcoming();
+		GetLessonBalance();
+		RefreshSchedule();
+		$("#datepicker").change(function () {
+			RefreshSchedule();
+		});
+	});
+
+
+	@if (Model.CanEdit)
+				{
+<text>
+
+	function AddAdminButtons() {
+		$(".scheduleRow").mouseover(function () {
+			$(this).css("background-color", "#f2dede");
+			$(this).find("button").removeClass("hide");
+			$(this).find("button").show();
+		});
+		$(".scheduleRow").mouseout(function () {
+			$(this).css("background-color", "#fff");
+			$(this).removeClass("bg-danger");
+			$(this).find("button").hide();
+		});
+
+		$(".deleteLesson").click(function () {
+			$.ajax({
+				url: "/api/schedule/" + $(this).attr("data-id"),
+				type: "DELETE",
+				contentType: "application/json",
+				success: function (data) {
+					RefreshSchedule();
+					RefreshUpcoming();
+				}
+			});
+		});
+	}
+
+	</text>
+		}
+
+
+	function DeleteRegistration(scheduleId, studentId) {
+		$.ajax({
+			url: "/api/registration/",
+			type: "DELETE",
+			data: JSON.stringify({ StudentId: studentId, ScheduleId: scheduleId }),
+			contentType: "application/json",
+			success: function (data) {
+				RefreshUpcoming();
+				RefreshSchedule();
+			}
+		});
+	}
+
+	function GetLessonBalance() {
+		$.get("/api/TransactionAPI/Balance/", function (data) {
+			$("#LessonBalance").html(data);
+		});
+	}
+
+	function RefreshSchedule() {
+		$.get("/Lesson/List/?start=" + $("#datepicker").val(), function (data) {
+			$("#schedule").html(data);
+			addBindings();
+		});
+	}
+
+	function addBindings() {
+		$(".schedule-list").change(function () {
+			var id = $(this).attr("id");
+			var scheduleId = id.substring(0, id.indexOf("_"));
+			var studentId = $(this).val();
+			Register(scheduleId, studentId);
+		});
+
+		@if (Model.CanEdit)
+			{
+				<text>
+		AddAdminButtons();
+		</text>
+			}
+	}
+
+	function Register(scheduleId, studentId) {
+		$.ajax({
+			url: "/api/registration/",
+			type: "POST",
+			data: JSON.stringify({ StudentId: studentId, ScheduleId: scheduleId }),
+			contentType: "application/json",
+			success: function () {
+				RefreshUpcoming();
+				RefreshSchedule();
+			},
+			statusCode: {
+				402: function () {
+					$('#OutOfCredits').modal("show");
+				}
+			}
+		});
+	}
+
+	function RefreshUpcoming() {
+		//get schedule
+		$.get("/Lesson/Upcoming/", function (data) {
+			$("#upcomingLessons").html(data);
+		});
+
+		GetLessonBalance();
+	}
+
+</script>
+
+<style>
+	.available {
+		background: #428bce !important;
+		color: #fff !important;
+	}
+</style>

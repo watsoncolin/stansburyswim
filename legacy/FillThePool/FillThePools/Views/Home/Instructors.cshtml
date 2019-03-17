@@ -1,0 +1,68 @@
+﻿@model FillThePool.Web.ViewModels.PageViewModel
+
+@{
+    ViewBag.Title = "Instructors";
+}
+
+<hgroup class="title">
+    <h1>@ViewBag.Title</h1>
+</hgroup>
+
+<article>
+	
+	@if (Model.CanEdit)
+	{
+		<a href="#" id="edit" style="float:right">Edit</a>
+		<a href="#" id="save" style="display: none; float: right">Save</a>
+		<div style="clear:both"></div>
+	}
+	
+	<div id="page_content">
+		@Html.Raw(Model.Page.Html)
+	</div>
+</article>
+
+
+	@if (Model.CanEdit)
+	{
+	 <script src="/Scripts/lib/ckeditor/ckeditor.js"></script>
+<script src="/Scripts/lib/ckeditor/adapters/jquery.js"></script>
+		<script>
+	
+			$(function () {
+				CKEDITOR.disableAutoInline = true;
+
+				$("#edit").click(function () {
+					$("#save").show();
+					$("#edit").hide();
+					$("#page_content").attr("contenteditable", "true");
+					$('#page_content').ckeditor();
+				});
+
+				
+				$("#save").click(function() {
+					var data = CKEDITOR.instances.page_content.getData();
+					var Page = {
+						PageId : @Model.Page.PageId,
+						Title: "@Model.Page.Title",
+						Html: data
+					};
+					
+						$.ajax({
+							type: "POST",
+							url: "/api/Page/",
+							contentType: "text/json",
+							data: JSON.stringify(Page)
+						}).done(function (msg) {
+						$("#save").hide();
+						$("#edit").show();
+						$("#page_content").attr("contenteditable", "false");
+						CKEDITOR.instances.page_content.destroy();
+						  });
+				});
+
+			});
+	
+		</script>
+	}
+

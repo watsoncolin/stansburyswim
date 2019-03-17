@@ -1,0 +1,332 @@
+﻿@model FillThePool.Web.ViewModels.UserRegistrationViewModel
+
+
+@if (Model.Schedules.Any())
+{
+	<div class="row">
+		<div class="col-md-4 form-group">
+			<select id="filter-lane" class="form-control">
+				<option value="0">Show All Instructors</option>
+				<option>Garrett</option>
+				<option>Kenna</option>
+				<option>Julia</option>
+				<option>Tajia</option>
+				<option>Ryan</option>
+				<option>Sarah</option>
+				<option>Andrew</option>
+				<option>Cassandra</option>
+				<option>Kirsti</option>
+				<option>Kallie</option>
+			</select>
+		</div>
+	</div>
+	foreach (var lane in Model.Schedules.GroupBy(s => s.Lane))
+	{
+
+		<div class="col-md-6" data-lane="@lane.Key">
+			<ul class="list-group">
+				<li class="list-group-item">
+					<h3>@lane.Key</h3>
+				</li>
+				@foreach (var s in lane)
+				{
+					<li class="list-group-item scheduleRow">
+						<div class="row" data-id="@s.ScheduleId">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-12 col-sm-12">@s.Start.ToShortTimeString() - @s.End.ToShortTimeString() </div>
+								</div>
+								<div class="row">
+									<div class="col-md-12 col-sm-12">
+										@if (s.Registration != null)
+										{
+											if (s.Registration.Student.User.PrivateRegistration)
+											{
+												<span>Reserved</span>
+											}
+											else
+											{
+												@(s.Registration.Student.User.FirstName + " " + s.Registration.Student.User.LastName)
+												<br />
+												@s.Registration.Student.Name
+											}
+										}
+										else
+										{
+											var id = s.ScheduleId + "_list";
+
+											if (Model.CanEdit)
+											{
+												var currentId = -1;
+
+												@Html.Raw("<select class='form-control schedule-list' id='" + id + "'><option>Available</option>")
+												;
+
+												foreach (FillThePool.Models.Student student in Model.Students.OrderBy(x => x.User.LastName))
+												{
+													if (currentId != -1 && currentId != student.User.UserId)
+													{
+														@Html.Raw("</optgroup>")
+														;
+													}
+													if (currentId != student.User.UserId)
+													{
+														@Html.Raw("<optgroup label=" + student.User.FirstName + " " + student.User.LastName + ">")
+														;
+													}
+
+													@Html.Raw("<option value=" + student.StudentId + ">" + student.Name + "</option>")
+													;
+
+													currentId = student.User.UserId;
+												}
+
+												@Html.Raw("</select>")
+												;
+											}
+											else
+											{
+												<select class="form-control schedule-list" id="@id">
+
+													<option>Available</option>
+													@foreach (FillThePool.Models.Student student2 in Model.Students)
+													{
+														<option value="@student2.StudentId">@student2.Name</option>
+													}
+												</select>
+											}
+										}
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-3 col-sm-3">
+										@if (Model.CanEdit)
+										{
+											<button type="button" class="btn btn-danger btn-sm hide deleteLesson" data-id="@s.ScheduleId"> Cancel </button>
+
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				}
+			</ul>
+		</div>
+	}
+
+	@*<div class="col-md-6">
+		<ul class="list-group">
+			@foreach (FillThePool.Models.Schedule s in Model.Schedules.Where(x => x.Lane == "Lane 1").OrderBy(s => s.Start))
+			{
+				<li class="list-group-item scheduleRow">
+					<div class="row" data-id="@s.ScheduleId">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="col-md-12 col-sm-12">@s.Start.ToShortTimeString() - @s.End.ToShortTimeString() </div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									@if (s.Registration != null)
+									{
+										if (s.Registration.Student.User.PrivateRegistration)
+										{
+											<span>Reserved</span>
+										}
+										else
+										{
+											@(s.Registration.Student.User.FirstName + " " + s.Registration.Student.User.LastName)
+											<br />
+											@s.Registration.Student.Name
+										}
+									}
+									else
+									{
+										var id = s.ScheduleId + "_list";
+
+										if (Model.CanEdit)
+										{
+											var currentId = -1;
+
+											@Html.Raw("<select class='form-control' id='" + id + "'><option>Available</option>")
+											;
+
+											foreach (FillThePool.Models.Student student in Model.Students.OrderBy(x => x.User.LastName))
+											{
+												if (currentId != -1 && currentId != student.User.UserId)
+												{
+													@Html.Raw("</optgroup>")
+													;
+												}
+												if (currentId != student.User.UserId)
+												{
+													@Html.Raw("<optgroup label=" + student.User.FirstName + " " + student.User.LastName + ">")
+													;
+												}
+
+												@Html.Raw("<option value=" + student.StudentId + ">" + student.Name + "</option>")
+												;
+
+												currentId = student.User.UserId;
+											}
+
+											@Html.Raw("</select>")
+											;
+										}
+										else
+										{
+											<select class="form-control" id="@id">
+
+												<option>Available</option>
+												@foreach (FillThePool.Models.Student student2 in Model.Students)
+												{
+													<option value="@student2.StudentId">@student2.Name</option>
+												}
+											</select>
+										}
+									}
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-3 col-sm-3">
+									@if (Model.CanEdit)
+									{
+										<button type="button" class="btn btn-danger btn-sm hide deleteLesson" data-id="@s.ScheduleId"> Cancel </button>
+
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			}
+		</ul>
+	</div>*@
+
+	@*<div class="col-md-6">
+			<ul class="list-group">
+				<li class="list-group-item">
+					<h3>Lane 2</h3>
+				</li>
+				@foreach (FillThePool.Models.Schedule s in Model.Schedules.Where(x => x.Lane == "Lane 2").OrderBy(s => s.Start))
+				{
+					<li class="list-group-item scheduleRow">
+						<div class="row" data-id="@s.ScheduleId">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-12 col-sm-12">@s.Start.ToShortTimeString() - @s.End.ToShortTimeString() </div>
+								</div>
+								<div class="row">
+									<div class="col-md-12 col-sm-12">
+										@if (s.Registration != null)
+										{
+											if (s.Registration.Student.User.PrivateRegistration)
+											{
+												<span>Reserved</span>
+											}
+											else
+											{
+												@(s.Registration.Student.User.FirstName + " " + s.Registration.Student.User.LastName)
+												<br />
+												@s.Registration.Student.Name
+											}
+										}
+										else
+										{
+											var id = s.ScheduleId + "_list";
+
+											if (Model.CanEdit)
+											{
+												var currentId = -1;
+
+												@Html.Raw("<select class='form-control' id='" + id + "'><option>Available</option>");
+
+												foreach (FillThePool.Models.Student student in Model.Students.OrderBy(x => x.User.LastName))
+												{
+													if (currentId != -1 && currentId != student.User.UserId)
+													{
+														@Html.Raw("</optgroup>");
+													}
+													if (currentId != student.User.UserId)
+													{
+														@Html.Raw("<optgroup label=" + student.User.FirstName + " " + student.User.LastName + ">");
+													}
+
+													@Html.Raw("<option value=" + student.StudentId + ">" + student.Name + "</option>");
+
+													currentId = student.User.UserId;
+												}
+
+												@Html.Raw("</select>");
+											}
+											else
+											{
+												<select class="form-control" id="@id">
+
+													<option>Available</option>
+													@foreach (FillThePool.Models.Student student2 in Model.Students)
+													{
+														<option value="@student2.StudentId">@student2.Name</option>
+													}
+												</select>
+											}
+										}
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-3 col-sm-3">
+										@if (Model.CanEdit)
+										{
+											<button type="button" class="btn btn-danger btn-sm hide deleteLesson" data-id="@s.ScheduleId"> Cancel </button>
+
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				}
+			</ul>
+
+		</div>*@
+}
+else
+{
+	<div class="panel-body" id="schedule">
+		No lessons available. <a href="#" id="gotoNext">Go to next available date.</a>
+	</div>
+}
+
+
+<script>
+	$(function () {
+		$("#gotoNext").click(function () {
+			$("#datepicker").datepicker('setDate', '@ViewBag.NextDate');
+
+			RefreshSchedule();
+		});
+	});
+
+	$(function () {
+		$("#filter-lane")
+			.change(function () {
+				var currentLane = $(this).val();
+				$("[data-lane]")
+					.each(function () {
+						if (currentLane === "0") {
+							$(this).show();
+						} else {
+							if ($(this).attr("data-lane") !== currentLane) {
+								$(this).hide();
+							} else {
+								$(this).show();
+							}
+						}
+					});
+			});
+	});
+
+</script>

@@ -1,0 +1,36 @@
+﻿@model ICollection<AuthenticationClientData>
+
+		@if (Model.Count == 0)
+		{
+			<div class="message-info">
+				<p>
+					There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=252166">this article</a>
+					for details on setting up this ASP.NET application to support logging in via external services.
+				</p>
+			</div>
+		}
+		else
+		{
+			using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
+			{
+				@Html.AntiForgeryToken()
+				<fieldset id="socialLoginList">
+					<legend style="font-size: 16px; margin-bottom: 40px;">Log in using facebook or google</legend>
+					
+						@foreach (AuthenticationClientData p in Model)
+						{
+							<p>
+								@if (p.AuthenticationClient.ProviderName == "facebook")
+								{
+								<button style="background: url('/Images/facebookLogin.png'); background-size: contain; background-repeat: no-repeat; border: none; width: 195px; height: 46px; padding: 0; margin: 4px;" type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Log in using your @p.DisplayName account"></button>
+								}
+								else if (p.AuthenticationClient.ProviderName == "google")
+								{
+								<button style="background: url('/Images/googleLogin.png'); background-size: contain; border: none; width: 202px; height: 46px; " type="submit" name="provider" value="@p.AuthenticationClient.ProviderName" title="Log in using your @p.DisplayName account"></button>
+								}
+
+							</p>
+						}
+				</fieldset>
+			}
+		}

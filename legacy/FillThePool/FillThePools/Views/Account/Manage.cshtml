@@ -1,0 +1,332 @@
+﻿@model FillThePool.Web.ViewModels.AccountViewModel
+@{
+	ViewBag.Title = "My Profile";
+}
+<script>
+	$(function () {
+
+		var Student = function () {
+			this.StudentId = ko.observable("@Model.Student.StudentId");
+			this.Name = ko.observable("@Model.Student.Name");
+			this.Notes = ko.observable("@Model.Student.Notes");
+			this.Ability = ko.observable("@Model.Student.Ability");
+			this.BirthDate = ko.observable("");
+		};
+
+		var privateRegistration = ("@Model.User.PrivateRegistration" == "False") ? false : true;
+		var UserVM = function () {
+			this.UserId = ko.observable("@Model.User.UserId");
+			this.UserName = ko.observable("@Model.User.UserName");
+			this.FirstName = ko.observable("@Model.User.FirstName");
+			this.LastName = ko.observable("@Model.User.LastName");
+			this.Phone = ko.observable("@Model.User.Phone");
+			this.Address = ko.observable("@Model.User.Address");
+			this.Address2 = ko.observable("@Model.User.Address2");
+			this.City = ko.observable("@Model.User.City");
+			this.State = ko.observable("@Model.User.State");
+			this.Zip = ko.observable("@Model.User.Zip");
+			this.MobilePhone = ko.observable("@Model.User.MobilePhone");
+			this.MobileCarrier = ko.observable("@Model.User.MobileCarrier");
+			this.Email = ko.observable("@Model.User.Email");
+			this.PrivateRegistration = ko.observable(privateRegistration);
+		};
+
+		var ViewModel = function () {
+			self = this;
+			this.user = new UserVM();
+			this.student = new Student();
+			this.jsonStudents = @Html.Raw(Model.StudentsJson);
+			this.students = ko.observableArray([]);
+			this.errorMessage = ko.observable();
+			this.currentStudent = {};
+
+			this.formatStudents = function() {
+				formatedStudents = [];
+				$.each(this.jsonStudents, function(key, value) {
+					formatedStudents.push({user: value.user, createdOn: value.createdOn, modifiedOn:value.modifiedOn, studentId: value.studentId, name:value.name, notes: value.notes, ability:value.ability, birthDate:  moment(value.birthDate).format('L')});
+				});
+				self.students(formatedStudents);
+			};
+			
+
+			this.newStudent = function () {
+				$("#newStudent").removeClass("hide");
+				$("#newStudent").show();
+			};
+
+			this.editStudent = function (student) {
+				vm.currentStudent = student;
+				$(".edit").hide();
+				$(".view").show();
+				$(".edit").removeClass("hide");
+				$("[data-studentview='" + student.studentId + "_view']").hide();
+				$("[data-studentedit='" + student.studentId + "_edit']").show();
+			};
+
+			this.addNewStudent = function () {
+				var validator = new ValidationUtility();
+				if (validator.validate("newStudentForm")){
+				studentDataService.save(ko.toJS(this.student)).done(function () {
+					studentDataService.get().done(function (data) {
+						self.jsonStudents = JSON.parse(data);
+						self.formatStudents();
+						$("#newStudent").hide();
+					});
+
+					$("#newStudent input").val("");
+				});
+				}
+			};
+
+			this.saveStudent = function (student) {
+				var validator = new ValidationUtility();
+				if (validator.validate("updateStudentForm")){
+					studentDataService.save(ko.toJS(student)).done(function () {
+						studentDataService.get().done(function (data) {
+							self.jsonStudents = JSON.parse(data);
+							self.formatStudents();
+							$(".edit").hide();
+							$("[data-studentview='" + student.studentId + "_view']").show();
+						});
+					});
+				}
+				return student;
+			};
+
+			this.requestDelConfirm = function (student) {
+				vm.currentStudent = student;
+				$("#del-confirm").modal();
+			};
+
+			this.delStudent = function () {
+				studentDataService.del(vm.currentStudent).done(function (data) {
+					studentDataService.get().done(function (data) {
+						self.jsonStudents = JSON.parse(data);
+						self.formatStudents();
+						$(".edit").hide();
+						$(".view").show();
+						$("#del-confirm").modal('hide');
+					});
+				});
+			};
+
+			this.save = function () {
+				var validator = new ValidationUtility();
+				if (validator.validate("profileForm")){
+					userDataService.save(ko.toJS(vm.user)).done(function (data, status) {
+						if (status) {
+							vm.errorMessage("Profile changes have been saved!");
+							$("#status").removeClass("bg-danger");
+							$("#status").addClass("bg-success");
+							$("#status").show();
+							setTimeout(function() { $("#status").hide(); }, 5000);
+						}
+					});
+				}
+				else{
+					vm.errorMessage("Validation error.  Check " + validator.invalidTitle());
+					$("#status").removeClass("bg-success");
+					$("#status").addClass("bg-danger");
+					$("#status").show();
+				}
+			};
+
+			
+			self.formatStudents();
+		};
+
+		var vm = new ViewModel();
+		ko.applyBindings(vm);
+	});
+
+</script>
+
+<p class="message-success">@ViewBag.StatusMessage</p>
+
+<div class="row">
+	<div class="col-md-5">
+
+		<h2>My Profile</h2>
+		<form id="profileForm">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+				<div class="form-group">
+					<label>First Name</label>
+					<input type="text" class="form-control" data-bind="value: user.FirstName" placeholder="First Name" title="First Name"  required maxlength="30" data-role="validate" data-content="First name is required.">
+				</div>
+				<div class="form-group">
+					<label>Last Name</label>
+					<input type="text" class="form-control" data-bind="value: user.LastName" placeholder="Last Name" title="Last Name"  required maxlength="30" data-role="validate" data-content="Last name is required.">
+				</div>
+				<div class="form-group">
+					<label>Email</label>
+					<input type="text" class="form-control" id="email" data-bind="value: user.Email" placeholder="Email" title="Email"  required maxlength="30" data-role="validate" data-content="Email is required.">
+				</div>
+				<div class="form-group">
+					<label>Phone</label>
+					<input type="text" class="form-control" data-bind="value: user.Phone" placeholder="Phone">
+				</div>
+				<div class="form-group">
+					<label>Address</label>
+					<input type="text" class="form-control" data-bind="value: user.Address" placeholder="Address">
+				</div>
+				<div class="form-group">
+					<label>Address2</label>
+					<input type="text" class="form-control" data-bind="value: user.Address2" placeholder="Address2">
+				</div>
+				<div class="form-group">
+					<label>City</label>
+					<input type="text" class="form-control" data-bind="value: user.City" placeholder="City">
+				</div>
+				<div class="form-group">
+					<label>State</label>
+					<input type="text" class="form-control" data-bind="value: user.State" placeholder="State">
+				</div>
+				<div class="form-group">
+					<label>Zip</label>
+					<input type="text" class="form-control" data-bind="value: user.Zip" placeholder="Zip">
+				</div>
+				<div class="form-group">
+					<label>Mobile Phone</label>
+					<input type="text" class="form-control" data-bind="value: user.MobilePhone" placeholder="Mobile Phone">
+				</div>
+				<div class="form-group">
+					<label>Carrier</label>
+					<input type="text" class="form-control" data-bind="value: user.MobileCarrier" placeholder="Carrier">
+				</div>
+				<div class="form-group" style="display: none;">
+					<input type="checkbox" data-bind="checked: user.PrivateRegistration">
+					<label> Private Registration (hide names on public lesson schedule):</label>
+				</div>
+				<p id="status" style="display:none" data-bind="text: errorMessage"></p>
+				<button class="btn btn-success" data-bind="click: save" data-role="trigger-validation">Save</button>
+			</div>
+		</div>
+			</form>
+		@if (ViewBag.HasLocalPassword)
+		{
+			@Html.Partial("_ChangePasswordPartial")
+		}
+		else
+		{
+			@Html.Partial("_SetPasswordPartial", Model.LocalPasswordModel)
+		}
+
+		@Html.Action("RemoveExternalLogins")
+
+		@Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+
+	</div>
+
+	<div class="col-md-5">
+		<div>
+			<h2>My Students</h2>
+			<p>
+				<button type="button" class="btn btn-primary"  data-bind="click: newStudent">New Student</button>
+			</p>
+			<div class="row hide" id="newStudent">
+				<div class="col-md-8">
+					<form id="newStudentForm">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group">
+								<label>First Name</label>
+								<input type="text" class="form-control" data-bind="value: student.Name" placeholder="First Name" required maxlength="30" data-role="validate" data-content="Student's first name is required.">
+							</div>
+							<div class="form-group">
+								<label>Birth Date</label>
+								<input type="text" class="form-control" data-bind="value: student.BirthDate" placeholder="Birth Date" required data-role="validate" title="BirthDate" pattern="^\d{1,2}\/\d{1,2}\/\d{4}$" data-content="Student's birth date is required (mm/dd/yyyy).">
+							</div>
+							<div class="form-group">
+								<label>Ability</label>
+								<input type="text" class="form-control" data-bind="value: student.Ability" placeholder="Ability">
+							</div>
+							<div class="form-group">
+								<label>Notes</label>
+								<input type="text" class="form-control" data-bind="value: student.Notes" placeholder="Notes">
+							</div>
+							<button class="btn btn-success" data-bind="click: addNewStudent" data-role="trigger-validation" data-form="newStudentForm">Save</button>
+						</div>
+					</div>
+				</form>
+				</div>
+			</div>
+			
+			<div id="list-container">
+				<div data-bind="template: {name: 'list-template', foreach: students}"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="text/html" id="list-template">
+	<div class="col-md-6 view" data-bind="attr { 'data-studentView' : studentId + '_view'}">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<button class="btn btn-xs btn-success" data-bind="click: $parent.editStudent">
+					<span class="glyphicon glyphicon-pencil"></span> Edit
+				</button>
+				<button class="btn btn-xs btn-danger" data-bind="click: $parent.requestDelConfirm">
+					<span class="glyphicon glyphicon-remove"></span> Delete
+				</button>
+				<h3 data-bind="text: name"></h3>
+				Birth Date: <p data-bind="text: birthDate"></p>
+				Ability: <p data-bind="text: ability"></p>
+				Notes: <p data-bind="text: notes"></p>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6 edit hide" data-bind="attr { 'data-studentEdit' : studentId + '_edit'}">
+		<form id="updateStudentForm">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<button class="btn btn-xs btn-success" data-bind="click: $parent.saveStudent"  data-role="trigger-validation">
+					<span class="glyphicon glyphicon-floppy-disk"></span> Save
+				</button>
+				<div class="form-group">
+					<label>Name</label>
+					<input type="text" class="form-control" data-bind="value: name" required maxlength="30" data-role="validate" title="First Name" data-content="Student's first name is required.">
+				</div>
+				<div class="form-group">
+					<label>Birth Date</label>
+					<input type="text" class="form-control" data-bind="value: birthDate"  required data-role="validate" title="Birth Date" pattern="^\d{1,2}\/\d{1,2}\/\d{4}$" data-content="Student's birth date is required (mm/dd/yyyy).">
+				</div>
+				<div class="form-group">
+					<label>Ability</label>
+					<input type="text" class="form-control" data-bind="value: ability">
+				</div>
+				<div class="form-group">
+					<label>Notes</label>
+					<input type="text" class="form-control" data-bind="value: notes">
+				</div>
+			</div>
+		</div>
+			</form>
+	</div>
+</script>
+
+<div class="modal fade" id="del-confirm">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Confirm Delete</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this student?</p>
+				<p class="alert alert-danger push-down"><strong>Note: </strong> There is no undo for this action.  Lessons this student is registered for will be canceled and your account refunded. (Lessons can only be cancelled 24hrs in advanced.)</p>
+			</div>
+			<div class="modal-footer">
+
+				<button type="button" class="btn" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-danger" data-bind="click: delStudent">Delete Student</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

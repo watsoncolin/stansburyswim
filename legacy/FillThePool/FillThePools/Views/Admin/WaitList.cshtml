@@ -1,0 +1,61 @@
+﻿@model List<FillThePool.Web.ViewModels.AdminWaitListViewModel>
+@{
+    ViewBag.Title = "WaitList";
+}
+<div class="row">
+	<div class="col-md-12" style="border-bottom: solid 1px #428bca; padding:5px;">
+		<ul class="nav nav-pills">
+			<li>@Html.ActionLink("Users", "Index")</li>
+			<li class="active">@Html.ActionLink("Wait List", "WaitList")</li>
+			<li>@Html.ActionLink("Schedule", "Schedule")</li>
+		</ul>
+	</div>
+</div>
+
+<h2>WaitList</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<td>User</td>
+			<td>Send Purchase Code</td>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var waitlistvm in Model)
+		{
+			<tr>
+				<td>@waitlistvm.WaitList.User.FirstName @waitlistvm.WaitList.User.LastName</td>
+				<td>
+					@if (!string.IsNullOrEmpty(waitlistvm.WaitList.PurchaseCode))
+					{
+						<span>@waitlistvm.WaitList.PurchaseCode</span> <a href="#" class="emailCode" data-user="@waitlistvm.WaitList.User.UserId">Resend</a><span style="margin-left: 10px;" class="status"></span>
+					}
+	 else
+	 {
+						<a href="#" class="emailCode" data-user="@waitlistvm.WaitList.User.UserId">Email Code</a><span style="margin-left: 10px;" class="status"></span>
+					}
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+
+<script>
+	$(function() {
+
+		$(".emailCode").click(function() {
+			var id = $(this).attr("data-user");
+			var element = $(this);
+			$(element).siblings(".status").text("sending...");
+			$(element).siblings(".status").addClass("bg-info");
+
+			$.get("/api/waitlist/email/" + id, function(data) {
+				$(element).siblings(".status").text("sent!");
+				$(element).siblings(".status").removeClass("bg-info");
+				$(element).siblings(".status").addClass("bg-success");
+			});
+		});
+	});
+</script>

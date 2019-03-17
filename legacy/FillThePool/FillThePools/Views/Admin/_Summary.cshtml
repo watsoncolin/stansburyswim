@@ -1,0 +1,43 @@
+﻿@model FillThePool.Web.ViewModels.AdminUserViewModel
+		   
+<div class="panel-body">
+	<div class="row">
+
+		<div class="col-md-3">
+			@Model.User.Address
+			<br />
+			@Model.User.City @Model.User.State
+			<br />
+			@Model.User.Phone
+		</div>
+		<div class="col-md-3">
+			Students:
+			<br />
+			@foreach (var student in Model.Students)
+			{
+				<span style="display: block">
+					@student.Name
+				</span>
+			}
+
+		</div>
+		<div class="col-md-3">
+			Recent Transactions:
+			<br />
+			@foreach (var transaction in Model.Transactions.OrderByDescending(t => t.CreatedOn).Take(5))
+			{
+				<span style="display: block">
+					@transaction.Description
+				</span>
+			}
+		</div>
+		<div class="col-md-3">
+			<ul>
+				<li><a href="#" data-id="@Model.User.UserId" class="editUser">Edit</a></li>
+				<li><a href="#" data-id="@Model.User.UserId" class="editLessons">Upcoming Lessons</a></li>
+				<li><a href="#" data-id="@Model.User.UserId" class="editTransactions">Adjust credits</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
