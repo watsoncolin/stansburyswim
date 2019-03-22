@@ -1,0 +1,25 @@
+﻿@page
+@model FillThePool.Core.Pages.ScheduleModel
+@{
+	ViewData["Title"] = "Schedule";
+}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h2 class="display-4 text-center">Schedule your lessons</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col"></div>
+		<div class="col-8">
+			<div id="root"></div>
+		</div>
+		<div class="col"></div>
+	</div>
+</div>
+<script>
+	const rootElement = document.getElementById('root');
+	ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
+</script>

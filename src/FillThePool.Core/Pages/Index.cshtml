@@ -1,10 +1,114 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+	ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+	<div class="headline col-md-5 p-lg-5 mx-auto my-5">
+		<h1 class="display-4">Stansbury Swim</h1>
+		<p class="lead font-weight-normal">And an even wittier subheading to boot. Jumpstart your marketing efforts with this example based on Apple’s marketing pages.</p>
+		<a class="btn btn-outline-primary" href="#pricing">Pricing</a>
+	</div>
+	<div class="swim-image shadow-sm d-none d-md-block">
+		<img src="~/img/img1.jpg" />
+	</div>
+	<div class="swim-image swim-image-2 shadow-sm d-none d-md-block">
+		<img src="~/img/img2.jpg" />
+	</div>
 </div>
+
+
+<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+	<div class="bg-primary text-white mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+		<div class="my-3 p-3">
+			<h2 class="display-5">Just watch 25-month old Brilya go!</h2>
+			<p class="lead">And an even wittier subheading.</p>
+		</div>
+	</div>
+	<div class="bg-light mr-md-3 text-center text-white overflow-hidden">
+		<div class="embed-responsive embed-responsive-16by9">
+			<iframe src="https://www.youtube.com/embed/P4UDQ3vm10k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+	</div>
+</div>
+
+<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+	<h1 class="display-4">How it works</h1>
+	<p class="lead">Our online system makes it easy to purchase and spend your swim lesson credits.</p>
+</div>
+<div class="container marketing">
+	<div class="row text-center">
+		<div class="col-lg-3 text-center">
+			<h2>Register</h2>
+			<p>Register for free using your Email, Google, or facebook account.  During registration you'll add your students to your account.</p>
+			<p><a class="btn btn-outline-primary" href="#" role="button">Get started</a></p>
+		</div>
+		<div class="col-lg-3">
+			<h2>Purchase</h2>
+			<p>You purchase credits that you can use to schedule your lessons on your own schedule.  We use Paypal for fast and secure payments.  You can also contact us to pay with cash or check.</p>
+			<p><a class="btn btn-outline-primary" href="#pricing" role="button">Pricing</a></p>
+		</div>
+		<div class="col-lg-3">
+			<h2>Schedule</h2>
+			<p>After you have credits added to your account you can spend your credits to customize your schedule.  Using our online system you can manage your schedule.</p>
+			<p><a class="btn btn-outline-primary" href="#" role="button">View schedule »</a></p>
+		</div>
+		<div class="col-lg-3">
+			<h2>Visit</h2>
+			<p>Come to the pool at your scheduled time.</p>
+			<p><a class="btn btn-outline-primary" href="#" role="button">View Address »</a></p>
+		</div>
+	</div>
+
+	<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" id="pricing">
+		<h1 class="display-4">Pricing</h1>
+		<p class="lead">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p>
+	</div>
+
+	<div class="container">
+		<div class="card-deck mb-3 text-center">
+			<div class="card mb-4 shadow-sm">
+				<div class="card-header">
+					<h4 class="my-0 font-weight-normal">Single Lesson</h4>
+				</div>
+				<div class="card-body">
+					<h1 class="card-title pricing-card-title">$15 <small class="text-muted">/ lesson</small></h1>
+					<ul class="list-unstyled mt-3 mb-4">
+						<li>Personal Instructor</li>
+						<li>Warm waters</li>
+						<li>Online scheduling</li>
+					</ul>
+					<button type="button" class="btn btn-lg btn-block btn-primary">Test the waters</button>
+				</div>
+			</div>
+			<div class="card mb-4 shadow-sm">
+				<div class="card-header">
+					<h4 class="my-0 font-weight-normal">10 Lessons</h4>
+				</div>
+				<div class="card-body">
+					<h1 class="card-title pricing-card-title">$13 <small class="text-muted">/ lesson</small></h1>
+					<ul class="list-unstyled mt-3 mb-4">
+						<li>Personal Instructor</li>
+						<li>Warm waters</li>
+						<li>Online scheduling</li>
+					</ul>
+					<button type="button" class="btn btn-lg btn-block btn-primary">Most popular</button>
+				</div>
+			</div>
+			<div class="card mb-4 shadow-sm">
+				<div class="card-header">
+					<h4 class="my-0 font-weight-normal">30 Lessons</h4>
+				</div>
+				<div class="card-body">
+					<h1 class="card-title pricing-card-title">$10 <small class="text-muted">/ lesson</small></h1>
+					<ul class="list-unstyled mt-3 mb-4">
+						<li>Personal Instructor</li>
+						<li>Warm waters</li>
+						<li>Online scheduling</li>
+					</ul>
+					<button type="button" class="btn btn-lg btn-block btn-primary">Best Value</button>
+				</div>
+			</div>
+		</div>
+	</div>
