@@ -19,32 +19,38 @@
 	<script src="~/static/js/bundle.js"></script>
 </head>
 <body>
-	<nav class="site-header sticky-top py-1">
+	<nav class="site-header sticky-top">
 		<div class="container d-flex flex-column flex-md-row justify-content-between">
 			<a class="py-2" asp-area="" asp-page="/Index">Stansbury Swim</a>
-			<a class="py-2 d-none d-md-inline-block" asp-area="" asp-page="/Index" asp-fragment="pricing">Pricing</a>
-			<a class="py-2 d-none d-md-inline-block" asp-area="" asp-page="/Schedule">Schedule</a>
+			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Index" asp-fragment="pricing">Pricing</a>
+			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Schedule">Schedule</a>
 			@if (User.Identity.IsAuthenticated)
 			{
-				<a class="py-2 d-none d-md-inline-block" href="#">Profile</a>
+				<a class="py-2 d-md-inline-block" href="#">Profile</a>
 			}
-			<a class="py-2 d-none d-md-inline-block" href="#">Instructors</a>
-			<a class="py-2 d-none d-md-inline-block" href="#">About</a>
+			<a class="py-2 d-md-inline-block" href="#">Instructors</a>
+			<a class="py-2 d-md-inline-block" href="#">About</a>
 			<partial name="_LoginPartial" />
 		</div>
 	</nav>
 
 	<partial name="_CookieConsentPartial" />
-	<section class="main-container">
+	@{
+		var fullPage = false;
+		if (ViewBag.FullPage != null && ViewBag.FullPage)
+		{
+			fullPage = true;
+		}
+	}
+	<section class="main-container @(!fullPage ? "container" : "")">
 		@RenderBody()
 	</section>
 
+	<br />
+	<br />
 	<footer class="border-top footer text-muted">
 		<div class="container">
 			&copy; @DateTime.Now.Year - Stansbury Swim - <a asp-area="" asp-page="/Privacy">Privacy</a> - <a asp-area="" asp-page="/Contact">Contact</a>
-
-
-
 		</div>
 	</footer>
 

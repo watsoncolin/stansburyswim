@@ -8,18 +8,13 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<h2 class="display-4 text-center">Schedule your lessons</h2>
+			<h1 class="display-4 text-center">Schedule</h1>
+			<br />
 		</div>
 	</div>
-	<div class="row">
-		<div class="col"></div>
-		<div class="col-8">
-			<div id="root"></div>
-		</div>
-		<div class="col"></div>
-	</div>
+	<div id="root"></div>
 </div>
-<script>
-	const rootElement = document.getElementById('root');
-	ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
-</script>
+	<script>
+		const rootElement = document.getElementById('root');
+		ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
+	</script>

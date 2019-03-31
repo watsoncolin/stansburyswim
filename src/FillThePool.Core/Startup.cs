@@ -32,6 +32,8 @@ namespace FillThePool.Core
 			   .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", reloadOnChange: true, optional: true)
 			   .AddEnvironmentVariables();
 
+			builder.AddUserSecrets<Startup>();
+
 			Configuration = builder.Build();
 
 			var elasticUri = Configuration["ElasticConfiguration:Uri"];
@@ -61,12 +63,22 @@ namespace FillThePool.Core
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<IdentityUser>()
-				.AddDefaultUI(UIFramework.Bootstrap4)
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+			services.AddDefaultIdentity<IdentityUser>(config =>
+			{
+				config.SignIn.RequireConfirmedEmail = true;
+			}).AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+			var clientId = Configuration["Authentication:Google:ClientId"];
+
+			services.AddAuthentication()
+				.AddGoogle(googleOptions =>
+				{
+					googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+					googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+				});
 
 			// In production, the React files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
