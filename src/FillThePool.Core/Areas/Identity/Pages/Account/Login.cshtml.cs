@@ -78,7 +78,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-				var user = await _userManager.FindByEmailAsync(Input.Email);
+				var user = await _userManager.FindByNameAsync(Input.Email);
 				if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -108,11 +108,13 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
 					}
 
 					ModelState.AddModelError(string.Empty, "Please confirm your email address.");
+					ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 					return Page();
 				}
 
 				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return Page();                
+				ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+				return Page();                
             }
 
             // If we got this far, something failed, redisplay form

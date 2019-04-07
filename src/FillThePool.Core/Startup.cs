@@ -66,7 +66,6 @@ namespace FillThePool.Core
 					Configuration.GetConnectionString("DefaultConnection")));
 			services.AddDefaultIdentity<IdentityUser>(config =>
 			{
-				config.SignIn.RequireConfirmedEmail = true;
 				config.Password.RequireNonAlphanumeric = false;
 				config.Password.RequireUppercase = false;
 				config.Password.RequireDigit = false;

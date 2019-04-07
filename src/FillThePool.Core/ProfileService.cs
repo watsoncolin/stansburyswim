@@ -11,10 +11,12 @@ namespace FillThePool.Core
 	public class ProfileService
 	{
 		private readonly ApplicationDbContext _context;
+		private readonly UserManager<IdentityUser> _userManager;
 
-		public ProfileService(ApplicationDbContext context)
+		public ProfileService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
 		{
 			_context = context;
+			_userManager = userManager;
 		}
 
 		public async Task<bool> IsProfileComplete(IdentityUser user)
@@ -22,6 +24,10 @@ namespace FillThePool.Core
 			var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.IdentityUserId == user.Id);
 
 			if (profile == null)
+				return false;
+			if (string.IsNullOrEmpty(profile.FirstName))
+				return false;
+			if (string.IsNullOrEmpty(profile.LastName))
 				return false;
 			if (string.IsNullOrEmpty(profile.Phone))
 				return false;
@@ -32,6 +38,8 @@ namespace FillThePool.Core
 			if (string.IsNullOrEmpty(profile.Zip))
 				return false;
 			if (string.IsNullOrEmpty(profile.State))
+				return false;
+			if (!await _userManager.IsEmailConfirmedAsync(user))
 				return false;
 
 			return true;

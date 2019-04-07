@@ -19,15 +19,6 @@ namespace FillThePool.Core.Pages
 		public void OnGet()
 		{
 
-			_logger.LogInformation($"oh hai there! : {DateTime.UtcNow}");
-			try
-			{
-				throw new Exception("oops. i haz cause error in UR codez.");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "ur code iz buggy.");
-			}
 		}
 	}
 }
