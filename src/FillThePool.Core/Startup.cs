@@ -18,6 +18,7 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Exceptions;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace FillThePool.Core
 {
@@ -66,8 +67,17 @@ namespace FillThePool.Core
 			services.AddDefaultIdentity<IdentityUser>(config =>
 			{
 				config.SignIn.RequireConfirmedEmail = true;
+				config.Password.RequireNonAlphanumeric = false;
+				config.Password.RequireUppercase = false;
+				config.Password.RequireDigit = false;
 			}).AddEntityFrameworkStores<ApplicationDbContext>();
 
+
+			// using Microsoft.AspNetCore.Identity.UI.Services;
+			// using WebPWrecover.Services;
+			services.AddTransient<IEmailSender, EmailSender>();
+			services.AddTransient<ProfileService>();
+			services.Configure<AuthMessageSenderOptions>(Configuration);
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
