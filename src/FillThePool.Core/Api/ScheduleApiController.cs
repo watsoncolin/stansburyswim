@@ -13,7 +13,6 @@ namespace FillThePool.Core.Api
     {
 		public async Task<IActionResult> GetAvailbleSchedules()
 		{
-
 			return Ok();
 		}
     }

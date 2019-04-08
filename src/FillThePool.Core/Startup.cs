@@ -72,14 +72,14 @@ namespace FillThePool.Core
 			}).AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-			// using Microsoft.AspNetCore.Identity.UI.Services;
-			// using WebPWrecover.Services;
 			services.AddTransient<IEmailSender, EmailSender>();
 			services.AddTransient<ProfileService>();
 			services.Configure<AuthMessageSenderOptions>(Configuration);
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+			services.AddOptions();
+			services.Configure<PayPalOptions>(Configuration.GetSection("PayPal"));
+			
 			var clientId = Configuration["Authentication:Google:ClientId"];
 
 			services.AddAuthentication()

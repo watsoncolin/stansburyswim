@@ -38,6 +38,10 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import Fab from '@material-ui/core/Fab';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 
 function TabContainer(props) {
 	return (
@@ -265,9 +269,17 @@ class Schedule extends React.Component {
 					<div className="col">
 						<h3 className="display-5 text-center">Schedule your lessons</h3>
 						<h5 className="display-6 text-center">OPTION A: Better for scheduling by day.</h5>
-						<Badge color="primary" badgeContent={4} className={classes.margin}>
-							<Typography className={classes.padding}>Available credits</Typography>
-						</Badge>
+						<div className="row">
+							<div className="col">
+								<Fab size="small" color="primary" aria-label="Add credits" className={classes.margin}>
+									<AddShoppingCartIcon />
+								</Fab>
+								<Badge color="primary" badgeContent={4} className={classes.margin}>
+									<Typography className={classes.padding}>Available credits</Typography>
+								</Badge>
+							</div>
+						</div>
+						<br />
 						<div className={classes.root}>
 							<Stepper activeStep={activeStep} orientation="vertical">
 								<Step>
@@ -538,7 +550,7 @@ class Schedule extends React.Component {
 													</ListItemIcon>
 													<ListItemText inset primary="Belle" />
 												</ListItem>
-												</List>
+											</List>
 											<div>
 											</div>
 										</div>
@@ -711,7 +723,7 @@ class Schedule extends React.Component {
 						</Table>
 					</div>
 				</div>
-			</div>
+			</div >
 		);
 	}
 }
