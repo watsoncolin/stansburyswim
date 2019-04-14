@@ -1,0 +1,197 @@
+﻿@page
+@model FillThePool.Core.Pages.PricingModel
+@{
+	ViewData["Title"] = "Pricing";
+}
+<script src="https://www.paypal.com/sdk/js?client-id=@Model.PayPalClientId"></script>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1 class="display-4 text-center">Pricing</h1>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="card-deck mb-3 text-center">
+		<div class="card mb-4 shadow-sm">
+			<div class="card-header">
+				<h4 class="my-0 font-weight-normal">Single Lesson</h4>
+			</div>
+			<div class="card-body">
+				<h1 class="card-title pricing-card-title">$16 <small class="text-muted">/ lesson</small></h1>
+				<ul class="list-unstyled mt-3 mb-4">
+					<li>Personal Instructor</li>
+					<li>Warm waters</li>
+					<li>Online scheduling</li>
+				</ul>
+				<div id="paypal-01"></div>
+			</div>
+		</div>
+		<div class="card mb-4 shadow-sm">
+			<div class="card-header">
+				<h4 class="my-0 font-weight-normal">10 Lessons</h4>
+			</div>
+			<div class="card-body">
+				<h1 class="card-title pricing-card-title">$14 <small class="text-muted">/ lesson</small></h1>
+				<ul class="list-unstyled mt-3 mb-4">
+					<li>Personal Instructor</li>
+					<li>Warm waters</li>
+					<li>Online scheduling</li>
+				</ul>
+				<div id="paypal-02"></div>
+			</div>
+		</div>
+		<div class="card mb-4 shadow-sm">
+			<div class="card-header">
+				<h4 class="my-0 font-weight-normal">30 Lessons</h4>
+			</div>
+			<div class="card-body">
+				<h1 class="card-title pricing-card-title">$12 <small class="text-muted">/ lesson</small></h1>
+				<ul class="list-unstyled mt-3 mb-4">
+					<li>Personal Instructor</li>
+					<li>Warm waters</li>
+					<li>Online scheduling</li>
+				</ul>
+				<div id="paypal-03"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+	var style = {
+		layout: 'horizontal',
+		color: 'blue',
+		shape: 'rect',
+		label: 'paypal'
+	};
+
+	paypal.Buttons({
+		style: style,
+		createOrder: function (data, actions) {
+			// Set up the transaction
+			return actions.order.create({
+				purchase_units: [{
+					custom_id: 'single_lesson',
+					amount: {
+						currency_code: 'USD',
+						value: '16.00',
+						breakdown: {
+							item_total: {
+								currency_code: 'USD',
+								value: '16.00'
+							}
+						}
+					},
+					description: 'Single lesson package',
+					soft_descriptor: 'Stansbury Swim',
+					items: [
+						{
+							quantity: 1,
+							name: 'Swim Lesson',
+							unit_amount: {
+								currency_code:'USD',
+								value: '16.00'
+							}
+						}
+					]
+				}]
+			});
+		},
+		onApprove: onApprove
+	}).render('#paypal-01');
+	paypal.Buttons({
+		style: style,
+		createOrder: function (data, actions) {
+			// Set up the transaction
+			return actions.order.create({
+				purchase_units: [{
+					custom_id: 'ten_lesson',
+					amount: {
+						currency_code: 'USD',
+						value: '140.00',
+						breakdown: {
+							item_total: {
+								currency_code: 'USD',
+								value: '140.00'
+							}
+						}
+					},
+					description: '10 lesson package',
+					soft_descriptor: 'Stansbury Swim',
+					items: [
+						{
+							quantity: 10,
+							name: 'Swim Lesson',
+							unit_amount: {
+								currency_code: 'USD',
+								value: '14.00'
+							}
+						}
+					]
+				}]
+			});
+		},
+		onApprove: onApprove
+	}).render('#paypal-02');
+	paypal.Buttons({
+		style: style,
+		createOrder: function (data, actions) {
+			// Set up the transaction
+			return actions.order.create({
+				purchase_units: [{
+					custom_id: 'thirty_lesson',
+					amount: {
+						currency_code: 'USD',
+						value: '360.00',
+						breakdown: {
+							item_total: {
+								currency_code: 'USD',
+								value: '360.00'
+							}
+						}
+					},
+					description: '30 lesson package',
+					soft_descriptor: 'Stansbury Swim',
+					items: [
+						{
+							quantity: 30,
+							name: 'Swim Lesson',
+							unit_amount: {
+								currency_code: 'USD',
+								value: '12.00'
+							}
+						}
+					]
+				}]
+			});
+		},
+		onApprove: onApprove
+	}).render('#paypal-03');
+
+
+
+	function onApprove(data, actions) {
+		return actions.order.capture().then(function (details) {
+			// Call your server to save the transaction
+			return fetch('/api/payments/verify-payment', {
+				method: 'post',
+				credentials: 'include',
+				headers: {
+					'content-type': 'application/json'
+				},
+				body: JSON.stringify({
+					orderId: data.orderID
+				})
+			}).then(function (res) {
+				window.location.href = "/Schedule";
+			}).then(function (details) {
+				if (details.error === 'INSTRUMENT_DECLINED') {
+					return actions.restart();
+				}
+			});
+		});
+	}
+</script>

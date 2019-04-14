@@ -11,6 +11,7 @@ namespace FillThePool.Core.Data
 		public DbSet<Profile> Profiles { get; set; }
 		public DbSet<Student> Students { get; set; }
 		public DbSet<Product> Products { get; set; }
+		public DbSet<Transaction> Transactions { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)

@@ -184,7 +184,17 @@ class Schedule extends React.Component {
 		checkedB: true,
 		schedules: [],
 		age: '',
+		credits: 0,
 	};
+
+	componentDidMount = async() => {
+		const response = await fetch('/api/payments/available-credits', {
+			method: 'GET',
+			credentials: 'same-origin'
+		});
+		const credits = await response.json();
+		this.setState({ credits });
+	}
 
 	handleNext = () => {
 		this.setState(state => ({
@@ -256,8 +266,7 @@ class Schedule extends React.Component {
 			createData('Pool 1', 'Archie with Ryan', '5/1/2019 1:00PM'),
 			createData('Pool 2', 'Archie with Ryan', '5/1/2019 1:00PM'),
 		];
-
-		const { value } = this.state;
+		
 		const date = new Date();
 
 		const schedules = this.getSchedule();
@@ -274,7 +283,7 @@ class Schedule extends React.Component {
 								<Fab size="small" color="primary" aria-label="Add credits" className={classes.margin}>
 									<AddShoppingCartIcon />
 								</Fab>
-								<Badge color="primary" badgeContent={4} className={classes.margin}>
+								<Badge color="primary" badgeContent={this.state.credits} className={classes.margin}>
 									<Typography className={classes.padding}>Available credits</Typography>
 								</Badge>
 							</div>
