@@ -57,7 +57,7 @@ class UpcommingLessons extends React.Component {
 									<TableCell style={{ minWidth: 125 }}>
 										<a href="#pool1" title={lesson.pool.address}>{lesson.pool.name}</a>
 									</TableCell>
-									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.start).format('LT')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
+									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.lessonTime).format('LT')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
 									<TableCell align="center" style={{ minWidth: 50 }}>
 										<Button className={classes.button} onClick={(e) => this.cancelLesson(lesson.id)}>Cancel</Button>
 									</TableCell>
