@@ -1,0 +1,105 @@
+﻿@page
+@model FillThePool.Core.Areas.Admin.Pages.Manage.InstructorModel
+@{
+	Layout = "_Layout.cshtml";
+	ViewData["Title"] = "Manage Instructors";
+}
+
+
+
+<h3>Instructors</h3>
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Bio</th>
+			<th>Image</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var instructor in Model.Instructors)
+		{
+			<tr class="view-@instructor.Id">
+				<td>@instructor.Name</td>
+				<td>@instructor.Bio</td>
+				<td>
+					<img src="@instructor.Image" style="max-width:100px" />
+				</td>
+				<td>
+					@{
+						var parms = new Dictionary<string, string>
+																	{
+							{ "instructorId", instructor.Id.ToString() }
+						};
+					}
+					<form method="post">
+						<button type="submit" class="btn btn-danger" asp-page-handler="DeleteInstructor" asp-all-route-data="parms">Delete</button>
+					</form>
+
+					<button type="button" class="btn btn-secondary" id="edit-instructor-@instructor.Id-btn">Edit</button>
+				</td>
+			</tr>
+			<tr class="edit-@instructor.Id" style="display:none">
+				<td colspan="4">
+					Edit
+					@instructor.Name
+					<form method="post" enctype="multipart/form-data">
+						<div asp-validation-summary="All" class="text-danger"></div>
+						<input type="hidden" asp-for="@instructor.Id" name="Id" />
+						<div class="form-group">
+							<label asp-for="@instructor.Name"></label>
+							<input asp-for="@instructor.Name" name="Name" class="form-control" />
+							<span asp-validation-for="@instructor.Name" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="@instructor.Bio"></label>
+							<textarea asp-for="@instructor.Bio" name="Bio" class="form-control"></textarea>
+							<span asp-validation-for="@instructor.Bio" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="@instructor.Image"></label>
+							<input type="file" name="Image" accept="image/*" />
+							<span asp-validation-for="@instructor.Image" class="text-danger"></span>
+						</div>
+						<input type="submit" value="Save" class="btn btn-primary" asp-page-handler="EditInstructor" />
+						<input type="button" value="Cancel" class="btn btn-primary" id="cancel-edit-instructor-@instructor.Id-btn" />
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<h4>Add Instructor</h4>
+<form method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="All" class="text-danger"></div>
+	<div class="form-group">
+		<label asp-for="NewInstructor.Name"></label>
+		<input asp-for="NewInstructor.Name" class="form-control" />
+		<span asp-validation-for="NewInstructor.Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewInstructor.Bio"></label>
+		<textarea asp-for="NewInstructor.Bio" class="form-control"></textarea>
+		<span asp-validation-for="NewInstructor.Bio" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewInstructor.Image"></label>
+		<input asp-for="NewInstructor.Image" accept="image/*" />
+		<span asp-validation-for="NewInstructor.Image" class="text-danger"></span>
+	</div>
+	<input type="submit" value="Add" class="btn btn-primary" asp-page-handler="AddInstructor" />
+</form>
+
+@foreach (var instructor in Model.Instructors)
+{
+
+	<script>
+		$("#edit-instructor-@instructor.Id-btn, #cancel-edit-instructor-@instructor.Id-btn").click(function () {
+			$(".edit-@instructor.Id").toggle();
+			$(".view-@instructor.Id").toggle();
+		});
+	</script>
+}

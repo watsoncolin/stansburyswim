@@ -37,7 +37,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <Folder Include="Areas\Admin\" />
+	  <Content Update="Areas\Admin\Pages\_ViewImports.cshtml">
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 

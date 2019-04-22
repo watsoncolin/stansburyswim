@@ -1,0 +1,28 @@
+﻿@page
+@model FillThePool.Core.Pages.InstructorsModel
+@{
+	ViewData["Title"] = "Instructors";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1 class="display-4 text-center">Instructors</h1>
+			<br />
+		</div>
+	</div>
+	<div class="row">
+		<ul class="list-unstyled">
+			@foreach (var instructor in Model.Instructors)
+			{
+				<li class="media">
+					<img src="@instructor.Image" class="mr-3" alt="@instructor.Name" style="max-width:200px; width:200px">
+					<div class="media-body">
+						<h5 class="mt-0 mb-1">@instructor.Name</h5>
+						@instructor.Bio
+					</div>
+				</li>
+			}
+		</ul>
+	</div>
+</div>

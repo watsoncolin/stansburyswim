@@ -19,6 +19,46 @@ namespace FillThePool.Core.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("FillThePool.Core.Data.Instructor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Bio");
+
+                    b.Property<string>("Image");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("FillThePool.Core.Data.Pool", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("Details");
+
+                    b.Property<string>("Image");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pools");
+                });
+
             modelBuilder.Entity("FillThePool.Core.Data.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -81,6 +121,66 @@ namespace FillThePool.Core.Data.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("FillThePool.Core.Data.Registration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<int?>("StudentId");
+
+                    b.Property<DateTime>("TimeStamp");
+
+                    b.Property<int?>("TransactionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("Registrations");
+                });
+
+            modelBuilder.Entity("FillThePool.Core.Data.Schedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime>("End");
+
+                    b.Property<int>("InstructorId");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<int>("PoolId");
+
+                    b.Property<int?>("RegistrationId");
+
+                    b.Property<DateTime>("Start");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstructorId");
+
+                    b.HasIndex("PoolId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("FillThePool.Core.Data.Student", b =>
@@ -316,6 +416,38 @@ namespace FillThePool.Core.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
                         .HasForeignKey("IdentityUserId");
+                });
+
+            modelBuilder.Entity("FillThePool.Core.Data.Registration", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("FillThePool.Core.Data.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.HasOne("FillThePool.Core.Data.Transaction", "Transaction")
+                        .WithMany()
+                        .HasForeignKey("TransactionId");
+                });
+
+            modelBuilder.Entity("FillThePool.Core.Data.Schedule", b =>
+                {
+                    b.HasOne("FillThePool.Core.Data.Instructor", "Instructor")
+                        .WithMany()
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FillThePool.Core.Data.Pool", "Pool")
+                        .WithMany()
+                        .HasForeignKey("PoolId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FillThePool.Core.Data.Registration", "Registration")
+                        .WithMany()
+                        .HasForeignKey("RegistrationId");
                 });
 
             modelBuilder.Entity("FillThePool.Core.Data.Student", b =>

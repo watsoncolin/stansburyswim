@@ -79,7 +79,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 
 			_logger.LogInformation("Added a new student.");
 
-			return Page();
+			return RedirectToPage("./Students");
 		}
 
 

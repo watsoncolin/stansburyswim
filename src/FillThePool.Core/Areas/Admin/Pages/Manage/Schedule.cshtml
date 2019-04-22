@@ -1,0 +1,21 @@
+﻿@page
+@model FillThePool.Core.Areas.Admin.Pages.Manage.ScheduleModel
+@{
+	Layout = "_Layout.cshtml";
+	ViewData["Title"] = "Manage Schedule";
+}
+
+
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1 class="display-4 text-center">Admin Schedule</h1>
+			<br />
+		</div>
+	</div>
+	<div id="root"></div>
+</div>
+<script>
+	const rootElement = document.getElementById('root');
+	ReactDOM.render(React.createElement(window.AdminSchedule), document.getElementById('root'));
+</script>

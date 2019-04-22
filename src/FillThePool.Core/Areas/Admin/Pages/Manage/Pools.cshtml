@@ -1,0 +1,116 @@
+﻿@page
+@model FillThePool.Core.Areas.Admin.Pages.Manage.PoolsModel
+@{
+	Layout = "_Layout.cshtml";
+	ViewData["Title"] = "Manage Pools";
+}
+
+
+<h3>Pools</h3>
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Details</th>
+			<th>Image</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var pool in Model.Pools)
+		{
+			<tr class="view-@pool.Id">
+				<td>@pool.Name</td>
+				<td>@pool.Address</td>
+				<td>@pool.Details</td>
+				<td>
+					<img src="@pool.Image" style="max-width:100px" />
+				</td>
+				<td>
+					@{
+						var parms = new Dictionary<string, string>
+															{
+							{ "poolId", pool.Id.ToString() }
+						};
+					}
+					<form method="post">
+						<button type="submit" class="btn btn-danger" asp-page-handler="DeletePool" asp-all-route-data="parms">Delete</button>
+					</form>
+
+					<button type="button" class="btn btn-secondary" id="edit-pool-@pool.Id-btn">Edit</button>
+				</td>
+			</tr>
+			<tr class="edit-@pool.Id" style="display:none">
+				<td colspan="5">
+					Edit
+					@pool.Name
+					<form method="post" enctype="multipart/form-data">
+						<div asp-validation-summary="All" class="text-danger"></div>
+						<input type="hidden" asp-for="@pool.Id" name="Id" />
+						<div class="form-group">
+							<label asp-for="@pool.Name"></label>
+							<input asp-for="@pool.Name" name="Name" class="form-control" />
+							<span asp-validation-for="@pool.Name" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="@pool.Details"></label>
+							<textarea asp-for="@pool.Details" name="Details" class="form-control"></textarea>
+							<span asp-validation-for="@pool.Details" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="@pool.Address"></label>
+							<input asp-for="@pool.Address" name="Address" class="form-control" />
+							<span asp-validation-for="@pool.Address" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="@pool.Image"></label>
+							<input type="file" name="Image" accept="image/*" />
+							<span asp-validation-for="@pool.Image" class="text-danger"></span>
+						</div>
+						<input type="submit" value="Save" class="btn btn-primary" asp-page-handler="EditPool" />
+						<input type="button" value="Cancel" class="btn btn-primary" id="cancel-edit-pool-@pool.Id-btn" />
+					</form>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<h4>Add pool</h4>
+<form method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="All" class="text-danger"></div>
+	<div class="form-group">
+		<label asp-for="NewPool.Name"></label>
+		<input asp-for="NewPool.Name" class="form-control" />
+		<span asp-validation-for="NewPool.Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewPool.Details"></label>
+		<textarea asp-for="NewPool.Details" class="form-control"></textarea>
+		<span asp-validation-for="NewPool.Details" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewPool.Address"></label>
+		<input asp-for="NewPool.Address" class="form-control" />
+		<span asp-validation-for="NewPool.Address" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewPool.Image"></label>
+		<input asp-for="NewPool.Image" accept="image/*" />
+		<span asp-validation-for="NewPool.Image" class="text-danger"></span>
+	</div>
+	<input type="submit" value="Add" class="btn btn-primary" asp-page-handler="AddPool" />
+</form>
+
+@foreach (var pool in Model.Pools)
+{
+
+	<script>
+		$("#edit-pool-@pool.Id-btn, #cancel-edit-pool-@pool.Id-btn").click(function () {
+			$(".edit-@pool.Id").toggle();
+			$(".view-@pool.Id").toggle();
+		});
+	</script>
+}

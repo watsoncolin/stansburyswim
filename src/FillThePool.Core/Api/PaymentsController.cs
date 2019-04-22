@@ -44,8 +44,7 @@ namespace FillThePool.Core.Api
 		public async Task<IActionResult> AvailableCredits()
 		{
 			var user = await _userManager.GetUserAsync(User);
-			var profile = _context.Profiles.FirstOrDefault(p => p.IdentityUserId == user.Id);
-			var credits = _context.Transactions.Where(t => t.ProfileId == profile.Id).Sum(t => t.LessonCredit);
+			var credits = Utilities.GetAvailableCredits(_context, user.Id);
 			return Ok(credits);
 		}
 

@@ -12,6 +12,10 @@ namespace FillThePool.Core.Data
 		public DbSet<Student> Students { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Pool> Pools { get; set; }
+		public DbSet<Instructor> Instructors { get; set; }
+		public DbSet<Schedule> Schedules { get; set; }
+		public DbSet<Registration> Registrations { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
@@ -27,5 +31,14 @@ namespace FillThePool.Core.Data
 
 			base.OnModelCreating(builder);
 		}
+	}
+
+	public class Instructor
+	{
+		public int Id { get; set; }
+		public bool Active { get; set; }
+		public string Name { get; set; }
+		public string Bio { get; set; }
+		public string Image { get; set; }
 	}
 }
