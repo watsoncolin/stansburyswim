@@ -17,6 +17,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 
+let headers = new Headers();
+headers.append('pragma', 'no-cache');
+headers.append('cache-control', 'no-cache');
 
 const styles = theme => ({
 	actionsContainer: {
@@ -62,8 +65,10 @@ class AdminSchedule extends React.Component {
 
 	loadSchedule = async (date) => {
 		const response = await fetch('/api/admin/schedule/' + moment(date).format('YYYY-MM-DD'), {
+			cache: 'no-cache',
 			method: 'GET',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 		const schedules = await response.json();
 		this.setState({ schedules });
@@ -71,8 +76,10 @@ class AdminSchedule extends React.Component {
 
 	loadPools = async () => {
 		const response = await fetch('/api/admin/schedule/pools', {
+			cache: 'no-cache',
 			method: 'GET',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 		const pools = await response.json();
 		this.setState({ pools });
@@ -80,8 +87,10 @@ class AdminSchedule extends React.Component {
 
 	loadInstructors = async () => {
 		const response = await fetch('/api/admin/schedule/instructors', {
+			cache: 'no-cache',
 			method: 'GET',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 		const instructors = await response.json();
 		this.setState({ instructors });
@@ -122,9 +131,11 @@ class AdminSchedule extends React.Component {
 	}
 
 	onDelete = async (scheduleId) => {
-		await fetch('/api/admin/schedule/' + scheduleId,  {
+		await fetch('/api/admin/schedule/' + scheduleId, {
+			cache: 'no-cache',
 			method: 'DELETE',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 
 		await this.loadSchedule(this.state.date);
@@ -136,6 +147,8 @@ class AdminSchedule extends React.Component {
 		const instructor = this.state.instructor.id > 0 ? this.state.instructor : undefined;
 
 		const response = await fetch('/api/admin/schedule/', {
+			headers: headers,
+			cache: 'no-cache',
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',

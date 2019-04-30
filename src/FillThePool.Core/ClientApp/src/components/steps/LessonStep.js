@@ -80,7 +80,7 @@ class LessonStep extends React.Component {
                     </TableHead>
                     <TableBody>
                         {lessons.map((lesson) => (
-                            <TableRow align="center" key={lesson.time}>
+                            <TableRow align="center" key={lesson.id}>
                                 <TableCell>
                                     <FormControl className={classes.formControl}>
                                         <InputLabel htmlFor="age-simple">Available</InputLabel>

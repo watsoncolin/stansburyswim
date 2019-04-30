@@ -3,10 +3,17 @@
 @{
 	ViewData["Title"] = "Students";
 	ViewData["ActivePage"] = ManageNavPages.Students;
+
+	var profileMessage = "";
+	if (!Model.Students.Any())
+	{
+		profileMessage = "You must add a student to your profile before you can purchase credits or schedule lessons.";
+	}
 }
 
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" for="StatusMessage" />
+<partial name="_StatusMessage" Model="profileMessage" />
 <div class="row">
 	<div class="col-md-6">
 		<h6>Add a new student</h6>

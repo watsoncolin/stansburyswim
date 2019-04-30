@@ -23,7 +23,7 @@
 }
 
 .site-header {
-	background-color: rgb(66,139,202, .85);
+	background-color: rgba(66,139,202, .85);
 	-webkit-backdrop-filter: saturate(180%) blur(20px);
 	backdrop-filter: saturate(180%) blur(20px);
 }
@@ -84,4 +84,8 @@
 
 .overflow-hidden {
 	overflow: hidden;
+}
+
+#sign-in-google {
+	height: 50px;
 }

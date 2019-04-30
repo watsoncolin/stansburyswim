@@ -83,7 +83,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-					if(!await _profileService.IsProfileComplete(user))
+					if(!await _profileService.IsComplete(user))
 					{
 						return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
 					}

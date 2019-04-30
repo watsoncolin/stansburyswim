@@ -19,7 +19,7 @@
 				<h4 class="my-0 font-weight-normal">Single Lesson</h4>
 			</div>
 			<div class="card-body">
-				<h1 class="card-title pricing-card-title">$16 <small class="text-muted">/ lesson</small></h1>
+				<h1 class="card-title pricing-card-title">$18 <small class="text-muted">/ lesson</small></h1>
 				<ul class="list-unstyled mt-3 mb-4">
 					<li>Personal Instructor</li>
 					<li>Warm waters</li>
@@ -33,7 +33,7 @@
 				<h4 class="my-0 font-weight-normal">10 Lessons</h4>
 			</div>
 			<div class="card-body">
-				<h1 class="card-title pricing-card-title">$14 <small class="text-muted">/ lesson</small></h1>
+				<h1 class="card-title pricing-card-title">$15 <small class="text-muted">/ lesson</small></h1>
 				<ul class="list-unstyled mt-3 mb-4">
 					<li>Personal Instructor</li>
 					<li>Warm waters</li>
@@ -47,7 +47,7 @@
 				<h4 class="my-0 font-weight-normal">30 Lessons</h4>
 			</div>
 			<div class="card-body">
-				<h1 class="card-title pricing-card-title">$12 <small class="text-muted">/ lesson</small></h1>
+				<h1 class="card-title pricing-card-title">$13 <small class="text-muted">/ lesson</small></h1>
 				<ul class="list-unstyled mt-3 mb-4">
 					<li>Personal Instructor</li>
 					<li>Warm waters</li>
@@ -62,7 +62,6 @@
 @if (User.Identity.IsAuthenticated)
 {
 	<script>
-
 		var style = {
 			layout: 'horizontal',
 			color: 'blue',
@@ -79,11 +78,11 @@
 						custom_id: 'single_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '16.00',
+							value: '18.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '16.00'
+									value: '18.00'
 								}
 							}
 						},
@@ -95,7 +94,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '16.00'
+									value: '18.00'
 								}
 							}
 						]
@@ -113,11 +112,11 @@
 						custom_id: 'ten_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '140.00',
+							value: '150.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '140.00'
+									value: '150.00'
 								}
 							}
 						},
@@ -129,7 +128,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '14.00'
+									value: '15.00'
 								}
 							}
 						]
@@ -147,11 +146,11 @@
 						custom_id: 'thirty_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '360.00',
+							value: '390.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '360.00'
+									value: '390.00'
 								}
 							}
 						},
@@ -163,7 +162,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '12.00'
+									value: '13.00'
 								}
 							}
 						]
@@ -179,10 +178,13 @@
 			return actions.order.capture().then(function (details) {
 				// Call your server to save the transaction
 				return fetch('/api/payments/verify-payment', {
+					cache: 'no-cache',
 					method: 'post',
 					credentials: 'include',
 					headers: {
-						'content-type': 'application/json'
+						'pragma': 'no-cache', 
+						'cache-control': 'no-cache',
+						'content-type': 'application/json',
 					},
 					body: JSON.stringify({
 						orderId: data.orderID

@@ -3,18 +3,25 @@
 @{
 	ViewData["Title"] = "Profile";
 	ViewData["ActivePage"] = ManageNavPages.Index;
-
+	
 	var confirmEmailMessage = "";
+	var profileMessage = "";
 
 	if (!Model.IsEmailConfirmed)
 	{
 		confirmEmailMessage = "You must confirm your email address before you can purchase and schedule lessons.";
+	}
+
+	if (!Model.IsProfileSetup)
+	{
+		profileMessage = "You must complete your profile before you can purchase credits or schedule lessons.";
 	}
 }
 
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" for="StatusMessage" />
 <partial name="_StatusMessage" model="confirmEmailMessage" />
+<partial name="_StatusMessage" model="profileMessage" />
 <div class="row">
 	<div class="col-md-6">
 		<form id="profile-form" method="post">

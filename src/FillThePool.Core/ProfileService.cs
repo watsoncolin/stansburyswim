@@ -18,12 +18,20 @@ namespace FillThePool.Core
 			_context = context;
 			_userManager = userManager;
 		}
+		public async Task<bool> IsComplete(IdentityUser user)
+		{
+			if (!await HasStudent(user) || !await IsProfileComplete(user))
+				return false;
+
+			return true;
+		}
 
 		public async Task<bool> IsProfileComplete(IdentityUser user)
 		{
 			var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.IdentityUserId == user.Id);
+			var emailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
-			if (profile == null)
+			if (profile == null || !emailConfirmed)
 				return false;
 			if (string.IsNullOrEmpty(profile.FirstName))
 				return false;
@@ -43,6 +51,18 @@ namespace FillThePool.Core
 				return false;
 
 			return true;
+		}
+
+		public async Task<bool> HasStudent(IdentityUser user)
+		{
+			var profile = await _context.Profiles
+				.Include("Students")
+				.FirstOrDefaultAsync(p => p.IdentityUserId == user.Id);
+
+			if (profile == null)
+				return false;
+
+			return profile.Students.Any();
 		}
 	}
 }

@@ -12,17 +12,23 @@
 		</div>
 	</div>
 	<div class="row">
-		<ul class="list-unstyled">
+		<div class="col">
 			@foreach (var instructor in Model.Instructors)
 			{
-				<li class="media">
-					<img src="@instructor.Image" class="mr-3" alt="@instructor.Name" style="max-width:200px; width:200px">
-					<div class="media-body">
-						<h5 class="mt-0 mb-1">@instructor.Name</h5>
-						@instructor.Bio
-					</div>
-				</li>
+				<div class="card">
+					<ul class="list-unstyled card-body">
+						<li class="media">
+							<img src="@instructor.Image" class="mr-3" alt="@instructor.Name" style="max-width:200px; width:200px">
+							<div class="media-body">
+								<h5 class="mt-0 mb-1">@instructor.Name</h5>
+								@instructor.Bio
+
+							</div>
+						</li>
+					</ul>
+				</div>
+				<br/>
 			}
-		</ul>
+		</div>
 	</div>
 </div>

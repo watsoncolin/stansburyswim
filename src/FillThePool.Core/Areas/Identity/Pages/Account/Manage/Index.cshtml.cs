@@ -21,12 +21,14 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 		private readonly IEmailSender _emailSender;
 		private readonly ApplicationDbContext _context;
 		private readonly ILogger<IndexModel> _logger;
+		private readonly ProfileService _profileService;
 
 		public IndexModel(
 			UserManager<IdentityUser> userManager,
 			SignInManager<IdentityUser> signInManager,
 			IEmailSender emailSender,
 			ApplicationDbContext context,
+			ProfileService profileService,
 			ILogger<IndexModel> logger)
 		{
 			_userManager = userManager;
@@ -34,9 +36,11 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 			_emailSender = emailSender;
 			_context = context;
 			_logger = logger;
+			_profileService = profileService;
 		}
 
 		public bool IsEmailConfirmed { get; set; }
+		public bool IsProfileSetup { get; set; }
 
 		[TempData]
 		public string StatusMessage { get; set; }
@@ -117,6 +121,13 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 			};
 
 			IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+			IsProfileSetup = await _profileService.IsProfileComplete(user);
+			var hasStudents = await _profileService.HasStudent(user);
+
+			if (IsProfileSetup && !hasStudents)
+			{
+				return RedirectToPage("./Students");
+			}
 
 			return Page();
 		}
@@ -197,6 +208,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 			profile.State = Input.State;
 			profile.Zip = Input.Zip;
 			profile.Referral = Input.Referral;
+			profile.Phone = Input.PhoneNumber;
 
 			if (profile.Id == 0)
 				_context.Profiles.Add(profile);

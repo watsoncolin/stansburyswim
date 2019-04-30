@@ -49,8 +49,15 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
 		{
 			var user = await _userManager.GetUserAsync(User);
+			var profile = await _context.Profiles
+				.Include("Students")
+				.FirstOrDefaultAsync(p => p.IdentityUserId == user.Id);
 
-			Students = (await _context.Profiles.Include("Students").FirstOrDefaultAsync(p => p.IdentityUserId == user.Id)).Students;
+			if (profile == null) {
+				return Page();
+			}
+
+			Students = profile.Students;
 
             return Page();
         }
@@ -64,6 +71,16 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 
 			var user = await _userManager.GetUserAsync(User);
 			var profile = _context.Profiles.FirstOrDefault(p => p.IdentityUserId == user.Id);
+
+			if(profile == null)
+			{
+				profile = new Profile
+				{
+					IdentityUserId = user.Id
+				};
+				_context.Profiles.Add(profile);
+				await _context.SaveChangesAsync();
+			}
 
 			var student = new Student
 			{

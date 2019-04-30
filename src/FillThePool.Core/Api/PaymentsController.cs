@@ -108,7 +108,7 @@ namespace FillThePool.Core.Api
 			{
 				case "single_lesson":
 					{
-						if (amount.Value == "16.00")
+						if (amount.Value == "18.00")
 						{
 							_context.Transactions.Add(new Transaction
 							{
@@ -128,7 +128,7 @@ namespace FillThePool.Core.Api
 					}
 				case "ten_lesson":
 					{
-						if (amount.Value == "140.00")
+						if (amount.Value == "150.00")
 						{
 							_context.Transactions.Add(new Transaction
 							{
@@ -148,7 +148,7 @@ namespace FillThePool.Core.Api
 					}
 				case "thirty_lesson":
 					{
-						if (amount.Value == "360.00")
+						if (amount.Value == "390.00")
 						{
 							_context.Transactions.Add(new Transaction
 							{

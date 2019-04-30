@@ -18,6 +18,10 @@ import ConfirmStep from './steps/ConfirmStep';
 import UpcommingLessons from './UpcommingLessons';
 import * as moment from 'moment';
 
+let headers = new Headers();
+headers.append('pragma', 'no-cache');
+headers.append('cache-control', 'no-cache');
+
 function TabContainer(props) {
     return (
         <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -51,17 +55,21 @@ class Schedule extends React.Component {
 
 	loadScheduleData = async () => {
 		const response = await fetch('/api/schedule', {
+			cache: 'no-cache',
 			method: 'GET',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 		const scheduleData = await response.json();
 		this.setState({ scheduleData });
 	}
 
     loadCreditCount = async () => {
-        const response = await fetch('/api/payments/available-credits', {
+		const response = await fetch('/api/payments/available-credits', {
+			cache: 'no-cache',
             method: 'GET',
-            credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
         });
         const credits = await response.json();
         this.setState({ credits });
@@ -139,8 +147,9 @@ class Schedule extends React.Component {
 		let allSuccess = true;
 		for (let lesson of this.state.lessons) {
 			const response = await fetch('/api/schedule/register', {
+				cache: 'no-cache',
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', ...headers },
 				credentials: 'same-origin',
 				body: JSON.stringify({
 					studentId: lesson.registration.student.id,
@@ -186,8 +195,10 @@ class Schedule extends React.Component {
 
 	handleCancelLesson = async registrationId => {
 		await fetch('/api/schedule/cancel/' + registrationId, {
+			cache: 'no-cache',
 			method: 'DELETE',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: headers,
 		});
 
 		await this.loadScheduleData();
