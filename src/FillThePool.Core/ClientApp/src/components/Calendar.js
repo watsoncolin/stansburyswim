@@ -11,23 +11,30 @@ import clsx from "clsx";
 
 class Calendar extends React.Component {
 	state = {
-		selectedDate: undefined
+		selectedDate: undefined,
+		dates: {},
 	};
 
 	handleDateChange = date => {
         this.props.onSelect(date);
 	};
 
+	componentDidMount = () => {
+		const dates = {};
+		for (let lesson of this.props.lessonDates) {
+			const date = moment(lesson)
+			if (date.isAfter(moment())) {
+				dates[date.dayOfYear()] = date;
+			}
+		}
+
+		this.setState({ dates });
+	}
+
 	renderDay = (date, _, dayInCurrentMonth) => {
         const { classes } = this.props;
-        let dateClone = moment(date);
-        const lesson = this.props.lessonDates.find((d) => {
-            const lessonDate = moment(d);
-            if (dateClone.isSame(lessonDate, 'day')) {
-                return d;
-            }
-            return false;
-        });
+		let dateClone = moment(date);
+		const lesson = this.state.dates[dateClone.dayOfYear()];
 
         let dayIsAvailable = false;
         if (lesson) {
