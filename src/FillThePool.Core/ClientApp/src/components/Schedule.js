@@ -99,7 +99,9 @@ class Schedule extends React.Component {
         const { scheduleData } = this.state;
 
         if (scheduleData.lessons) {
-            return scheduleData.lessons.map((l) => {
+			return scheduleData.lessons
+				.filter(l => this.state.pool && l.poolId === this.state.pool.id)
+				.map((l) => {
                 return l.time;
             });
         }

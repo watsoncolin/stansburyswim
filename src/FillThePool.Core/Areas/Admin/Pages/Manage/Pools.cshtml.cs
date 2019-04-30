@@ -93,7 +93,7 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 				if (editedPool.Image != null)
 				{
 					var ext = Path.GetExtension(editedPool.Image.FileName);
-					pool.Image = await Utilities.SaveFile(_hostingEnvironment, editedPool.Image, $"pool-{pool.Id}.{ext}");
+					pool.Image = await Utilities.SaveFile(_hostingEnvironment, editedPool.Image, $"pool-{pool.Id}{ext}");
 					await _context.SaveChangesAsync();
 				}
 

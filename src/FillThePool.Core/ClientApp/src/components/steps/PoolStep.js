@@ -67,7 +67,7 @@ class PoolStep extends React.Component {
 								</Button>
 							</Paper>
 							<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title">
-								<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
+								<DialogTitle id="simple-dialog-title">{pool.name}</DialogTitle>
 								<DialogContent>
 									<Typography variant="subtitle1" gutterBottom>
 										{pool.address}

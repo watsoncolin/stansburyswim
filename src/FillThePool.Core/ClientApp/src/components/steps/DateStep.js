@@ -21,14 +21,11 @@ const styles = theme => ({
 
 
 class DateStep extends React.Component {
-	state = {
-		open: false,
-	};
 	render() {
 		const { classes } = this.props;
 		return (
 			<div className={classes.actionsContainer}>
-				<Typography>Days with available lesson slots are Blue.  Days that you've scheduled lessons are Green.</Typography>
+				<Typography>Days with available lesson slots are Blue.</Typography>
                 <Calendar {...this.props} />
 				<div>
 					<br />

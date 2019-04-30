@@ -29,6 +29,9 @@ const styles = theme => ({
 	table: {
 		width: '100%',
 	},
+	image: {
+		width: '100%'
+	}
 });
 
 
@@ -62,15 +65,13 @@ class UpcommingLessons extends React.Component {
 
 	render() {
 		const { classes, upcommingLessons } = this.props;
-		const pools = [...new Set(upcommingLessons.map((l) => l.pool))];
+		const pools = upcommingLessons.map((l) => l.pool);
 		const filteredPools = {};
 		for (let pool of pools) {
 			if (filteredPools[pool.id] === undefined) {
 				filteredPools[pool.id] = pool;
 			}
 		}
-
-		console.log(filteredPools);
 		return (
 			<div className="row">
 				<div className="col">
@@ -105,11 +106,14 @@ class UpcommingLessons extends React.Component {
 					const pool = filteredPools[key];
 					return (
 						<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title" key={pool.id}>
-							<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
+							<DialogTitle id="simple-dialog-title">{pool.name}</DialogTitle>
 							<DialogContent>
 								<Typography variant="subtitle1" gutterBottom>
 									{pool.address}
 								</Typography>
+								<div>
+									<img src={pool.image} alt={pool.name} className={classes.image} />
+								</div>
 								<DialogContentText>
 									{pool.details}
 								</DialogContentText>
