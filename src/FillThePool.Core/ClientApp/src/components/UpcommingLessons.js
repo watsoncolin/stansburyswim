@@ -8,6 +8,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
 import * as moment from 'moment';
 
 const styles = theme => ({
@@ -24,20 +26,36 @@ const styles = theme => ({
 	table: {
 		width: '100%',
 	},
+	dialogDetails: {
+		padding: `0 ${theme.spacing.unit * 2}px`,
+		margin: theme.spacing.unit * 2,
+	},
 });
 
 
 class UpcommingLessons extends React.Component {
 	state = {
 		student: '',
+		open: false,
 	};
 
 	cancelLesson = (lessonId) => {
 		this.props.handleCancelLesson(lessonId);
 	}
 
+	handleClickOpenDialog = (poolId) => {
+		this.setState({
+			open: poolId,
+		});
+	};
+
+	handleClose = value => {
+		this.setState({ selectedValue: value, open: false });
+	};
+
 	render() {
 		const { classes, upcommingLessons } = this.props;
+		const pools = [...new Set(upcommingLessons.map((l) => l.pool))];
 		return (
 			<div className="row">
 				<div className="col">
@@ -55,7 +73,9 @@ class UpcommingLessons extends React.Component {
 							{upcommingLessons.map(lesson => (
 								<TableRow key={lesson.id}>
 									<TableCell style={{ minWidth: 125 }}>
-										<a href="#pool1" title={lesson.pool.address}>{lesson.pool.name}</a>
+									<Button color="primary" className={classes.button} onClick={() => this.handleClickOpenDialog(lesson.pool.id)}>
+										{lesson.pool.name}
+									</Button>
 									</TableCell>
 									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.lessonTime).format('LT')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
 									<TableCell align="center" style={{ minWidth: 50 }}>
@@ -66,6 +86,14 @@ class UpcommingLessons extends React.Component {
 						</TableBody>
 					</Table>
 				</div>
+				{pools.map(pool => (
+					<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title" key={pool.id}>
+						<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
+						<div className={classes.dialogDetails}>
+							{pool.details}
+						</div>
+					</Dialog>
+				))}
 			</div>
 		)
 	}
