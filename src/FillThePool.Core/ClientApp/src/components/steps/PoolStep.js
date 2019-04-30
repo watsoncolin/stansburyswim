@@ -8,7 +8,8 @@ import Paper from '@material-ui/core/Paper';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 class PoolStep extends React.Component {
@@ -67,9 +68,14 @@ class PoolStep extends React.Component {
 							</Paper>
 							<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title">
 								<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
-								<div className={classes.dialogDetails}>
-                                    {pool.details}
-								</div>
+								<DialogContent>
+									<Typography variant="subtitle1" gutterBottom>
+										{pool.address}
+									</Typography>
+									<DialogContentText>
+										{pool.details}
+									</DialogContentText>
+								</DialogContent>
 							</Dialog>
 						</div>
 					))}
@@ -80,10 +86,6 @@ class PoolStep extends React.Component {
 }
 
 const styles = theme => ({
-	dialogDetails: {
-		padding: `0 ${theme.spacing.unit * 2}px`,
-		margin: theme.spacing.unit * 2,
-	},
 	actionsContainer: {
 		marginBottom: theme.spacing.unit * 2,
 	},

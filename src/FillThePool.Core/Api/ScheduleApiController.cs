@@ -22,7 +22,7 @@ namespace FillThePool.Core.Api
 			_context = context;
 			_userManager = userManager;
 		}
-		
+
 		[Route("cancel/{registrationId}")]
 		[HttpDelete]
 		public async Task<IActionResult> Cancel(int registrationId)
@@ -37,11 +37,20 @@ namespace FillThePool.Core.Api
 					var schedule = _context.Schedules.First(s => s.Registration.Student.ProfileId == profile.Id && s.Registration.Id == registrationId);
 					var registration = _context.Registrations.First(r => r.Id == registrationId);
 
+
+					// Prevent cancellation if lesson is less than a day away.
+					var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Mountain Standard Time");
+					if (schedule.Start < now.AddDays(1))
+					{
+						return BadRequest();
+					}
+
 					_context.Registrations.Remove(registration);
 
 					schedule.Registration = null;
 
-					var transaction = new Transaction {
+					var transaction = new Transaction
+					{
 						Amount = -1,
 						LessonCredit = 1,
 						Description = "Canceled Lesson",
@@ -49,7 +58,7 @@ namespace FillThePool.Core.Api
 						Type = "Canceled Lesson",
 						TimeStamp = DateTime.UtcNow
 					};
-					
+
 					_context.Transactions.Add(transaction);
 					_context.SaveChanges();
 
@@ -243,7 +252,15 @@ namespace FillThePool.Core.Api
 	{
 		public int Id { get; set; }
 		public int ScheduleId { get; set; }
-		public bool CanCancel { get => LessonTime > DateTime.Now.AddDays(1); }
+		public bool CanCancel
+		{
+			get
+			{
+				var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Mountain Standard Time");
+
+				return LessonTime > now.AddDays(1);
+			}
+		}
 		public Pool Pool { get; set; }
 		public DateTime LessonTime { get; set; }
 		public Instructor Instructor { get; set; }

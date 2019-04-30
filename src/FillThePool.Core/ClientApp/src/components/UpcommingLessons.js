@@ -10,6 +10,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Typography from '@material-ui/core/Typography';
 import * as moment from 'moment';
 
 const styles = theme => ({
@@ -25,10 +28,6 @@ const styles = theme => ({
 	focusVisible: {},
 	table: {
 		width: '100%',
-	},
-	dialogDetails: {
-		padding: `0 ${theme.spacing.unit * 2}px`,
-		margin: theme.spacing.unit * 2,
 	},
 });
 
@@ -53,9 +52,25 @@ class UpcommingLessons extends React.Component {
 		this.setState({ selectedValue: value, open: false });
 	};
 
+	renderCancelButton = lesson => {
+		if (lesson.canCancel) {
+			return (<Button className={this.props.classes.button} onClick={() => this.cancelLesson(lesson.id)}>Cancel</Button>);
+		}
+
+		return <span />;
+	}
+
 	render() {
 		const { classes, upcommingLessons } = this.props;
 		const pools = [...new Set(upcommingLessons.map((l) => l.pool))];
+		const filteredPools = {};
+		for (let pool of pools) {
+			if (filteredPools[pool.id] === undefined) {
+				filteredPools[pool.id] = pool;
+			}
+		}
+
+		console.log(filteredPools);
 		return (
 			<div className="row">
 				<div className="col">
@@ -73,27 +88,35 @@ class UpcommingLessons extends React.Component {
 							{upcommingLessons.map(lesson => (
 								<TableRow key={lesson.id}>
 									<TableCell style={{ minWidth: 125 }}>
-									<Button color="primary" className={classes.button} onClick={() => this.handleClickOpenDialog(lesson.pool.id)}>
-										{lesson.pool.name}
-									</Button>
+										<Button color="primary" className={classes.button} onClick={() => this.handleClickOpenDialog(lesson.pool.id)}>
+											{lesson.pool.name}
+										</Button>
 									</TableCell>
 									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.lessonTime).format('LT')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
 									<TableCell align="center" style={{ minWidth: 50 }}>
-										<Button className={classes.button} onClick={(e) => this.cancelLesson(lesson.id)}>Cancel</Button>
+										{this.renderCancelButton(lesson)}
 									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
 				</div>
-				{pools.map(pool => (
-					<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title" key={pool.id}>
-						<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
-						<div className={classes.dialogDetails}>
-							{pool.details}
-						</div>
-					</Dialog>
-				))}
+				{Object.keys(filteredPools).map((key) => {
+					const pool = filteredPools[key];
+					return (
+						<Dialog open={this.state.open === pool.id} onClose={this.handleClose} aria-labelledby="simple-dialog-title" key={pool.id}>
+							<DialogTitle id="simple-dialog-title">Pool Details</DialogTitle>
+							<DialogContent>
+								<Typography variant="subtitle1" gutterBottom>
+									{pool.address}
+								</Typography>
+								<DialogContentText>
+									{pool.details}
+								</DialogContentText>
+							</DialogContent>
+						</Dialog>
+					)
+				})}
 			</div>
 		)
 	}
