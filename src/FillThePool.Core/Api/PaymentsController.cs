@@ -30,13 +30,15 @@ namespace FillThePool.Core.Api
 		private readonly ILogger<PaymentsController> _logger;
 		private readonly PayPalOptions _paypalOptions;
 		private readonly ApplicationDbContext _context;
+		private readonly EmailService _emailService;
 
-		public PaymentsController(IOptions<PayPalOptions> paypalOptions, ILogger<PaymentsController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager)
+		public PaymentsController(IOptions<PayPalOptions> paypalOptions, ILogger<PaymentsController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager, EmailService emailService)
 		{
 			_userManager = userManager;
 			_context = context;
 			_logger = logger;
 			_paypalOptions = paypalOptions.Value;
+			_emailService = emailService;
 		}
 
 		[HttpGet]
@@ -174,6 +176,7 @@ namespace FillThePool.Core.Api
 			}
 
 			// Send email
+			await _emailService.SendPurchaseEmail(user);
 
 
 			return Ok();

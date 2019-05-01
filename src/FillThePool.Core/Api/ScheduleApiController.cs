@@ -16,11 +16,13 @@ namespace FillThePool.Core.Api
 	{
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly ApplicationDbContext _context;
+		private readonly EmailService _emailService;
 
-		public ScheduleApiController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+		public ScheduleApiController(ApplicationDbContext context, UserManager<IdentityUser> userManager, EmailService emailService)
 		{
 			_context = context;
 			_userManager = userManager;
+			_emailService = emailService;
 		}
 
 		[Route("cancel/{registrationId}")]
@@ -28,6 +30,7 @@ namespace FillThePool.Core.Api
 		public async Task<IActionResult> Cancel(int registrationId)
 		{
 			var user = await _userManager.GetUserAsync(User);
+			var scheduleId = -1;
 
 			using (var dbContextTransaction = _context.Database.BeginTransaction())
 			{
@@ -35,6 +38,7 @@ namespace FillThePool.Core.Api
 				{
 					var profile = _context.Profiles.First(p => p.IdentityUserId == user.Id);
 					var schedule = _context.Schedules.First(s => s.Registration.Student.ProfileId == profile.Id && s.Registration.Id == registrationId);
+					scheduleId = schedule.Id;
 					var registration = _context.Registrations.First(r => r.Id == registrationId);
 
 
@@ -70,6 +74,10 @@ namespace FillThePool.Core.Api
 					ModelState.AddModelError("saving", "Error saving registration");
 					return BadRequest(ModelState);
 				}
+				finally
+				{
+					await _emailService.SendCancelationEmail(user, scheduleId);
+				}
 			}
 
 			return Ok();
@@ -80,7 +88,7 @@ namespace FillThePool.Core.Api
 		public async Task<IActionResult> Register(ScheduleRegistration newRegistration)
 		{
 			var user = await _userManager.GetUserAsync(User);
-
+			var scheduleId = -1;
 			using (var dbContextTransaction = _context.Database.BeginTransaction())
 			{
 				try
@@ -94,6 +102,7 @@ namespace FillThePool.Core.Api
 
 					var profile = _context.Profiles.First(p => p.IdentityUserId == user.Id);
 					var schedule = _context.Schedules.First(s => s.Registration == null && s.Id == newRegistration.ScheduleId);
+					scheduleId = schedule.Id;
 					var student = _context.Students.First(s => s.Id == newRegistration.StudentId);
 
 					var transaction = new Transaction
@@ -127,6 +136,10 @@ namespace FillThePool.Core.Api
 					dbContextTransaction.Rollback();
 					ModelState.AddModelError("saving", "Error saving registration");
 					return BadRequest(ModelState);
+				}
+				finally
+				{
+					await _emailService.SendScheduleEmail(user, scheduleId);
 				}
 			}
 

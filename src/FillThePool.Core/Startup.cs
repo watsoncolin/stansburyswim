@@ -74,7 +74,8 @@ namespace FillThePool.Core
 
 			services.AddTransient<IEmailSender, EmailSender>();
 			services.AddTransient<ProfileService>();
-			services.Configure<AuthMessageSenderOptions>(Configuration);
+			services.AddTransient<EmailService>();
+			services.Configure<EmailSenderOptions>(Configuration);
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 			services.AddOptions();

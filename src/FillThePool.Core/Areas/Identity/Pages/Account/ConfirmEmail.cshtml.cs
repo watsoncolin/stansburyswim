@@ -13,10 +13,12 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
+		private readonly EmailService _emailService;
 
-        public ConfirmEmailModel(UserManager<IdentityUser> userManager)
+		public ConfirmEmailModel(UserManager<IdentityUser> userManager, EmailService emailService)
         {
             _userManager = userManager;
+			_emailService = emailService;
         }
 
         public async Task<IActionResult> OnGetAsync(string userId, string code)
@@ -37,6 +39,8 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
             {
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");
             }
+
+			await _emailService.SendRegistrationEmail(user);
 
             return Page();
         }
