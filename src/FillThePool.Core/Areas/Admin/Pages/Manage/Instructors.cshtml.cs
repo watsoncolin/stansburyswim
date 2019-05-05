@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FillThePool.Core.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FillThePool.Core.Areas.Admin.Pages.Manage
 {
-    public class InstructorModel : PageModel
+	public class InstructorModel : PageModel
     {
 		private readonly IHostingEnvironment _hostingEnvironment;
 		private readonly ApplicationDbContext _context;

@@ -1,0 +1,218 @@
+﻿@page
+@model FillThePool.Core.Areas.Admin.Pages.Manage.UserDetailsModel
+@{
+	Layout = "_Layout.cshtml";
+	ViewData["Title"] = $"User Details: {Model.Profile.FirstName}";
+	ViewData["ActivePage"] = FillThePool.Core.Areas.Admin.Pages.Manage.AdminNavPages.Users;
+	var parms = new Dictionary<string, string>
+	{
+		{ "profileId", Model.Profile.Id.ToString() }
+	};
+}
+
+<a class="btn btn-link" asp-page="../Manage/Users">&lt; Back</a>
+<div class="row">
+	<div class="col-8">
+		<h4>@ViewData["Title"]</h4>
+		<form method="post">
+			<div class="form-group row">
+				<label for="name" class="col-sm-2 col-form-label">Name</label>
+				<div class="col-sm-10">
+					<sapn class="form-control-plaintext">
+						@Model.Profile.FirstName @Model.Profile.LastName
+						<button class="btn btn-link" type="submit" asp-page-handler="LoginAsUser" asp-all-route-data="parms">Login as user</button>
+						@if (Model.Claims.Any(c => c.Type == "Admin"))
+						{
+							<button class="btn btn-link" type="submit" asp-page-handler="RemoveAdminClaim" asp-all-route-data="parms">Remove Admin Privlege</button>
+						}
+						else
+						{
+							<button class="btn btn-link" type="submit" asp-page-handler="AddAdminClaim" asp-all-route-data="parms">Make User an Administrator</button>
+						}
+					</sapn>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="name" class="col-sm-2 col-form-label">Email</label>
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control-plaintext" value="@Model.Profile.IdentityUser.Email">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="name" class="col-sm-2 col-form-label">Address</label>
+				<div class="col-sm-10">
+					<address>
+						@Model.Profile.Address1 <br />
+						@if (!string.IsNullOrEmpty(Model.Profile.Address2))
+						{
+							@Model.Profile.Address2 <br />
+						}
+						@Model.Profile.City <br />
+						@Model.Profile.State <br />
+						@Model.Profile.Zip <br />
+					</address>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-4">
+		<h5>Balance: @Model.Balance</h5>
+		<form method="post">
+			<div asp-validation-summary="All" class="text-danger"></div>
+			<input type="hidden" asp-for="NewTransaction.ProfileId" />
+			<div class="form-group">
+				<label asp-for="NewTransaction.Description"></label>
+				<input asp-for="NewTransaction.Description" class="form-control" />
+				<span asp-validation-for="NewTransaction.Description" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="NewTransaction.LessonCredit"></label>
+				<input asp-for="NewTransaction.LessonCredit" class="form-control" />
+				<span asp-validation-for="NewTransaction.LessonCredit" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="NewTransaction.Amount"></label>
+				<input asp-for="NewTransaction.Amount" class="form-control" />
+				<span asp-validation-for="NewTransaction.Amount" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="NewTransaction.Type"></label>
+				<select class="form-control" asp-for="NewTransaction.Type" asp-items="@(new SelectList(Model.NewTransaction.Types))">
+					<option>Please select one</option>
+				</select>
+				<span asp-validation-for="NewTransaction.Type" class="text-danger"></span>
+			</div>
+			<button type="submit" class="btn btn-primary" asp-page-handler="AddTransaction">Add transaction</button>
+		</form>
+	</div>
+</div>
+<h5>
+	<a class="btn btn-link" data-toggle="collapse" href="#collapseStudents" role="button" aria-expanded="true" aria-controls="collapseStudents">
+		Students
+	</a>
+</h5>
+<div class="collapse show" id="collapseStudents">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					Name
+				</th>
+				<th>
+					Ability
+				</th>
+				<th>
+					Notes
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var student in Model.Profile.Students)
+			{
+				<tr>
+					<td>@student.Name</td>
+					<td>@student.Ability</td>
+					<td>@student.Notes</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<hr />
+<h5>
+	<a class="btn btn-link" data-toggle="collapse" href="#collapseSchedule" role="button" aria-expanded="false" aria-controls="collapseSchedule">
+		Upcoming lessons
+	</a>
+</h5>
+@if (Model.Schedules.Any())
+{
+	var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Mountain Standard Time");
+
+	<div class="collapse" id="collapseSchedule">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						Schedule
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var schedule in Model.Schedules.Where(s => s.Start > now))
+				{
+					<tr>
+						<td>
+							@schedule.Start.ToLongDateString() @schedule.Start.ToLongTimeString() @schedule.Registration.Student.Name with @schedule.Instructor.Name
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+else
+{
+	<div>No upcoming lessons</div>
+}
+<hr />
+<h5>
+	<a class="btn btn-link" data-toggle="collapse" href="#collapseTransaction" role="button" aria-expanded="false" aria-controls="collapseTransaction">
+		Transactions
+	</a>
+</h5>
+<div class="collapse" id="collapseTransaction">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					Description
+				</th>
+				<th>
+					Type
+				</th>
+				<th>
+					Amount
+				</th>
+				<th>
+					Credits
+				</th>
+				<th>
+					Transaction Date
+				</th>
+				<th>
+					Lesson
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var transaction in Model.Transactions)
+			{
+				var date = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(transaction.TimeStamp, "Mountain Standard Time");
+				var schedule = Model.Schedules.FirstOrDefault(s => s.Registration.Transaction.TransactionId == transaction.TransactionId);
+				<tr>
+					<td>
+						@transaction.Description <br />
+						@if (!string.IsNullOrEmpty(transaction.PayPalPaymentId))
+						{
+							<small>PayPal Transaction Id: @transaction.PayPalPaymentId</small>
+						}
+					</td>
+					<td>
+						@transaction.Type
+					</td>
+					<td>@transaction.Amount</td>
+					<td>@transaction.LessonCredit</td>
+					<td>@date.ToLongDateString()</td>
+					<td>
+						@if (schedule != null)
+						{
+							<div>
+								@schedule.Start.ToLongDateString() @schedule.Start.ToLongTimeString() @schedule.Registration.Student.Name with @schedule.Instructor.Name
+							</div>
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

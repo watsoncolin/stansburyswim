@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FillThePool.Core.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,8 @@ namespace FillThePool.Core.Api
 {
     [Route("api/admin/schedule")]
     [ApiController]
-    public class AdminScheduleApiController : ControllerBase
+	[Authorize("AdminPolicy")]
+	public class AdminScheduleApiController : ControllerBase
     {
 		private readonly ApplicationDbContext _context;
 		public AdminScheduleApiController(ApplicationDbContext context)

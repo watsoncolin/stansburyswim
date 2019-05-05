@@ -1,0 +1,47 @@
+﻿@page
+@model FillThePool.Core.Areas.Admin.Pages.Manage.UsersModel
+@{
+	Layout = "_Layout.cshtml";
+	ViewData["Title"] = "Users";
+	ViewData["ActivePage"] = FillThePool.Core.Areas.Admin.Pages.Manage.AdminNavPages.Users;
+}
+
+<h4>@ViewData["Title"]</h4>
+<a asp-page="./Export" target="_blank">Export</a>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				Students
+			</th>
+			<th>
+				Balance
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var p in Model.Profiles)
+		{
+			var parms = new Dictionary<string, string>
+			{
+				{ "profileId", p.Profile.Id.ToString() }
+			};
+			<tr>
+				<td>
+					<a asp-page="UserDetails" asp-all-route-data="parms">@p.Profile.FirstName @p.Profile.LastName</a>
+				</td>
+				<td>
+					@p.Profile.Students.Count
+				</td>
+				<td>
+					@p.Balance
+				</td>
+				<td></td>
+			</tr>
+		}
+	</tbody>
+</table>

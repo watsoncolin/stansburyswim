@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FillThePool.Core.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -10,15 +12,13 @@ namespace FillThePool.Core.Pages
 {
 	public class IndexModel : PageModel
 	{
-		private readonly ILogger<IndexModel> _logger;
-
-		public IndexModel(ILogger<IndexModel> logger)
+		private readonly UserManager<IdentityUser> _userManager;
+		public IndexModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
 		{
-			_logger = logger;
+			_userManager = userManager;
 		}
-		public void OnGet()
+		public async Task OnGet()
 		{
-
 		}
 	}
 }

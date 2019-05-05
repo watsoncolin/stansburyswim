@@ -64,6 +64,7 @@ namespace FillThePool.Core
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
+
 			services.AddDefaultIdentity<IdentityUser>(config =>
 			{
 				config.Password.RequireNonAlphanumeric = false;
@@ -77,7 +78,20 @@ namespace FillThePool.Core
 			services.AddTransient<EmailService>();
 			services.Configure<EmailSenderOptions>(Configuration);
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services.AddMvc()
+				.AddRazorPagesOptions(options =>
+				{
+					options.Conventions.AuthorizeAreaFolder("Admin", "/Manage", "AdminPolicy");
+				})
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("AdminPolicy", policy => policy.RequireClaim("Admin"));
+			});
+
+
 			services.AddOptions();
 			services.Configure<PayPalOptions>(Configuration.GetSection("PayPal"));
 			

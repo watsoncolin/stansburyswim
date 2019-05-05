@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,16 +20,5 @@ namespace FillThePool.Core.Data
 		[Required]
 		virtual public Instructor Instructor { get; set; }
 		virtual public Registration Registration { get; set; }
-	}
-
-	public class Registration
-	{
-		public int Id { get; set; }
-		public DateTime TimeStamp { get; set; }
-		public DateTime CreatedOn { get; set; }
-		public DateTime ModifiedOn { get; set; }
-		public IdentityUser CreatedBy { get; set; }
-		virtual public Student Student { get; set; }
-		virtual public Transaction Transaction { get; set; }
 	}
 }
