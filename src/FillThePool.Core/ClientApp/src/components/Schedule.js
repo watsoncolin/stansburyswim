@@ -332,7 +332,8 @@ class Schedule extends React.Component {
                         </div>
                     </div>
                     <div className="col-md-2 d-none d-md-block d-lg-none"></div>
-                </div>
+				</div>
+				<br /><br /><br />
 				<UpcommingLessons upcommingLessons={this.state.scheduleData.upcommingLessons} handleCancelLesson={this.handleCancelLesson} />
             </div>
         );

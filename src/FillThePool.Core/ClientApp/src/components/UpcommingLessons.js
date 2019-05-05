@@ -75,7 +75,6 @@ class UpcommingLessons extends React.Component {
 		return (
 			<div className="row">
 				<div className="col">
-					<br /><br /><br />
 					<h3 className="display-5 text-center">Upcoming lessons</h3>
 					<Table className={classes.table}>
 						<TableHead>
