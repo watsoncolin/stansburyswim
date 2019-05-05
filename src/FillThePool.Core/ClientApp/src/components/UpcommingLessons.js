@@ -93,7 +93,7 @@ class UpcommingLessons extends React.Component {
 											{lesson.pool.name}
 										</Button>
 									</TableCell>
-									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.lessonTime).format('LT')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
+									<TableCell align="center" style={{ minWidth: 250 }}>{moment(lesson.lessonTime).format('dddd, MMMM Do, h:mm a')} {lesson.student.name} with {lesson.instructor.name} </TableCell>
 									<TableCell align="center" style={{ minWidth: 50 }}>
 										{this.renderCancelButton(lesson)}
 									</TableCell>
