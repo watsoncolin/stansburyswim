@@ -77,13 +77,8 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
             {
 				// This doesn't count login failures towards account lockout
 				// To enable password failures to trigger account lockout, set lockoutOnFailure: true
-				var user = await  _userManager.FindByIdAsync("bfe0d2a5-aa03-4449-b826-51ea914e5f51");
-				await _signInManager.SignInAsync(user, false);
-
-
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-				var user1 = await _userManager.FindByNameAsync(Input.Email);
-				return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
+				var user = await _userManager.FindByNameAsync(Input.Email);
 
 				if (result.Succeeded)
                 {
