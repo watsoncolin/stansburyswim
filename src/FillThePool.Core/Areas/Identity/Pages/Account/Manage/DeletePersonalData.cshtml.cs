@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using FillThePool.Core.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
@@ -13,16 +16,20 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+		private readonly ApplicationDbContext _context;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+			ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-        }
+			_context = context;
+
+		}
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -65,6 +72,10 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+
+			var profile = await _context.Profiles.FirstAsync(p => p.IdentityUserId == user.Id);
+			_context.Profiles.Remove(profile);
+			await _context.SaveChangesAsync();
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
