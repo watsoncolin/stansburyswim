@@ -29,7 +29,7 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 		public IList<Claim> Claims { get; set; } = new List<Claim>();
 		public List<Transaction> Transactions { get; set; } = new List<Transaction>();
 		public List<Registration> Registrations { get; set; } = new List<Registration>();
-		public List<Schedule> Schedules { get; set; } = new List<Schedule>();
+		public List<Data.Schedule> Schedules { get; set; } = new List<Data.Schedule>();
 		[BindProperty]
 		public NewTransactionModel NewTransaction { get; set; } = new NewTransactionModel();
 		public class NewTransactionModel
