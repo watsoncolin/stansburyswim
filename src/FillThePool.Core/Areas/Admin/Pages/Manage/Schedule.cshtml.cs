@@ -8,14 +8,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FillThePool.Core.Areas.Admin.Pages.Manage
 {
-	public class EditModel : PageModel
+	public class ScheduleModel : PageModel
     {
         public void OnGet()
         {
-			if(!User.Claims.Any(c => c.Type == "Admin"))
-			{
-
-			}
         }
     }
 }
