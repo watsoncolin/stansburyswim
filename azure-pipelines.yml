@@ -13,5 +13,5 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build src/FillThePool.Core/FillThePool.Core.csproj --configuration $(buildConfiguration)
+- script: dotnet publish src/FillThePool.Core/FillThePool.Core.csproj --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
