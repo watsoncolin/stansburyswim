@@ -28,8 +28,6 @@ namespace FillThePool.Core.Api
 			var schedules = await _context.Schedules
 				.Include("Pool")
 				.Include("Instructor")
-				.Include(r => r.Registration)
-				.Include(r => r.Registration.Student)
 				.Where((s) => s.Start.Year == date.Year && s.Start.DayOfYear == date.DayOfYear)
 				.ToListAsync();
 

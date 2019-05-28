@@ -8,12 +8,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import StepButtons from './StepButtons';
-import Tooltip from '@material-ui/core/Tooltip';
 import * as moment from 'moment';
 
 const styles = theme => ({
@@ -32,28 +30,25 @@ const styles = theme => ({
 
 class LessonStep extends React.Component {
     state = {
-		student: '',
-		sort: 'time',
-		sortDirection: 'asc',
-		lessons:[],
+        student: '',
     };
 
     componentDidMount = () => {
         if (this.props.selectedDate === undefined) {
             this.props.handleBack();
-		}
-	}
+        }
+    }
 
-	createSortHandler = property => event => {
-		this.props.onRequestSort(event, property);
-	};
+	handleSelectChange = (event, lesson) => {
+		this.props.onSelect(lesson, event.target.value);
+    };
 
 	handleSelectChange = (event, lesson) => {
 		this.props.onSelect(lesson, event.target.value);
 	};
 
     render() {
-        const { classes, selectedDate, lessons, students, lessonSort, sortDirection } = this.props;
+        const { classes, selectedDate, lessons, students } = this.props;
         let selectedDateFormatted = '';
         if (selectedDate) {
             selectedDateFormatted = selectedDate.toDateString();
@@ -62,6 +57,7 @@ class LessonStep extends React.Component {
 		let warning = <span />
 
 		if (this.props.validationMessage && this.props.validationMessage.errors) {
+			debugger;
 			for (let error of this.props.validationMessage.errors) {
 				if (error.credits) {
 					warning = (
@@ -73,6 +69,7 @@ class LessonStep extends React.Component {
 			}			
 		}
 
+
         return (
             <div className={classes.actionsContainer}>
 				{selectedDateFormatted}
@@ -81,34 +78,8 @@ class LessonStep extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell>Student</TableCell>
-							<TableCell align="center"
-								sortDirection={lessonSort === 'time' ? sortDirection : false}>
-								<Tooltip
-									title="Sort"
-									placement='bottom-start'
-									enterDelay={300}>
-									<TableSortLabel
-										active={lessonSort === 'time'}
-										direction={sortDirection}
-										onClick={this.createSortHandler('time')}>
-										Time
-									</TableSortLabel>
-								</Tooltip>
-							</TableCell>
-							<TableCell align="center"
-								sortDirection={lessonSort === 'instructor' ? sortDirection : false}>
-								<Tooltip
-									title="Sort"
-									placement='bottom-start'
-									enterDelay={300}>
-									<TableSortLabel
-										active={lessonSort === 'instructor'}
-										direction={sortDirection}
-										onClick={this.createSortHandler('instructor')}>
-										Instructor
-									</TableSortLabel>
-								</Tooltip>
-							</TableCell>
+                            <TableCell align="center">Time</TableCell>
+                            <TableCell align="center">Instructor</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -154,7 +125,7 @@ LessonStep.propTypes = {
     onSelect: PropTypes.func,
     handleBack: PropTypes.func,
     handleNext: PropTypes.func,
-	onSortChange: PropTypes.func,
+    //pools: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(LessonStep);
