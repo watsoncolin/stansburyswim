@@ -144,6 +144,9 @@
 						Start
 					</th>
 					<th>
+						Pool
+					</th>
+					<th>
 						Student
 					</th>
 					<th>
@@ -154,23 +157,24 @@
 			<tbody>
 				@foreach (var schedule in Model.Schedules)
 				{
-					<tr>
-						<td>@schedule.Start.ToShortTimeString()</td>
-						@if (schedule.Registration == null)
-						{
-							<td>Available</td>
-						}
-						else
-						{
-							<td>
-								@schedule.Registration.Student.Name
-								<br />
-								<small>@schedule.Registration.Student.Notes</small>
-							</td>
-						}
+				<tr>
+					<td>@schedule.Start.ToShortTimeString()</td>
+					<td>@schedule.Pool.Name</td>
+					@if (schedule.Registration == null)
+					{
+						<td>Available</td>
+					}
+					else
+					{
+						<td>
+							@schedule.Registration.Student.Name
+							<br />
+							<small>@schedule.Registration.Student.Notes</small>
+						</td>
+					}
 
-						<td>@schedule.Instructor.Name</td>
-					</tr>
+					<td>@schedule.Instructor.Name</td>
+				</tr>
 				}
 			</tbody>
 		</table>
