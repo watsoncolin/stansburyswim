@@ -17,7 +17,7 @@ namespace FillThePool.Core.Pages
 		{
 			_userManager = userManager;
 		}
-		public async Task OnGet()
+		public void OnGet()
 		{
 		}
 	}

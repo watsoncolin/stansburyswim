@@ -48,6 +48,10 @@ class LessonStep extends React.Component {
 		this.props.onRequestSort(event, property);
 	};
 
+	handleSelectChange = (event, lesson) => {
+		this.props.onSelect(lesson, event.target.value);
+	};
+
     render() {
         const { classes, selectedDate, lessons, students, lessonSort, sortDirection } = this.props;
         let selectedDateFormatted = '';

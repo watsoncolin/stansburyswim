@@ -13,6 +13,17 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		@@media print {
+			@@page {
+				margin: 1cm;
+			}
+
+			body {
+				margin: 1.6cm;
+			}
+		}
+	</style>
 	<title>@ViewData["Title"] - Stansbury Swim</title>
 
 	<environment include="Development">
@@ -29,7 +40,7 @@
 	<script src="~/static/js/bundle.js"></script>
 </head>
 <body>
-	<nav class="site-header sticky-top">
+	<nav class="site-header sticky-top d-print-none">
 		<div class="container d-flex flex-column flex-md-row justify-content-between">
 			<a class="py-2" asp-area="" asp-page="/Index">Stansbury Swim</a>
 			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Pricing">Pricing</a>
@@ -48,13 +59,13 @@
 			fullPage = true;
 		}
 	}
-	<section class="main-container @(!fullPage ? "container" : "")">
+	<section class="main-container @(!fullPage ? "container" : "") d-print-none">
 		@RenderBody()
+		<br />
+		<br />
 	</section>
 
-	<br />
-	<br />
-	<footer class="border-top footer text-muted">
+	<footer class="border-top footer text-muted d-print-none">
 		<div class="container">
 			&copy; @DateTime.Now.Year - Stansbury Swim - <a asp-area="" asp-page="/Privacy">Privacy</a> - <a asp-area="" asp-page="/Contact">Contact</a>
 		</div>
@@ -80,5 +91,9 @@
 	</environment>
 
 	@RenderSection("Scripts", required: false)
+
+	<div class="d-none d-print-block">
+		@RenderSection("Print", false)
+	</div>
 </body>
 </html>
