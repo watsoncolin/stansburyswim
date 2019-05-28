@@ -1,8 +1,25 @@
 ﻿
 <ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @AdminNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Admin</a></li>
-    <li class="nav-item"><a class="nav-link @AdminNavPages.UsersNavClass(ViewContext)" id="students" asp-page="./Users">Users</a></li>
-    <li class="nav-item"><a class="nav-link @AdminNavPages.InstructorsNavClass(ViewContext)" id="instructors" asp-page="./Instructors">Instructors</a></li>
-    <li class="nav-item"><a class="nav-link @AdminNavPages.PoolsNavClass(ViewContext)" id="pools" asp-page="./Pools">Pools</a></li>
-    <li class="nav-item"><a class="nav-link @AdminNavPages.SchedulesNavClass(ViewContext)" id="schedules" asp-page="./Schedule">Schedules</a></li>
+	<li class="nav-item">
+		<a class="nav-link @AdminNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Admin</a>
+	</li>
+	<li class="nav-item"><a class="nav-link @AdminNavPages.UsersNavClass(ViewContext)" id="students" asp-page="./Users">Users</a></li>
+	<li class="nav-item"><a class="nav-link @AdminNavPages.InstructorsNavClass(ViewContext)" id="instructors" asp-page="./Instructors">Instructors</a></li>
+	<li class="nav-item"><a class="nav-link @AdminNavPages.PoolsNavClass(ViewContext)" id="pools" asp-page="./Pools">Pools</a></li>
+	<li class="nav-item">
+		<a class="nav-link @AdminNavPages.SchedulesNavClass(ViewContext)" id="schedules" asp-page="./EditSchedule">Schedules</a>
+		@if (AdminNavPages.SchedulesNavClass(ViewContext) == "active")
+		{
+			<div>
+				<ul class="flex-column pl-2 nav">
+					<li class="nav-item">
+						<a class="nav-link" asp-page="./EditSchedule">Edit Schedule</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" asp-page="./PrintSchedule">Print Schedule</a>
+					</li>
+				</ul>
+			</div>
+		}
+	</li>
 </ul>

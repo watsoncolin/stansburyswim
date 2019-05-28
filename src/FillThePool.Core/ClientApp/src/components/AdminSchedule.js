@@ -188,17 +188,25 @@ class AdminSchedule extends React.Component {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{this.state.schedules.map(schedule => (
-							<TableRow key={schedule.id}>
-								<TableCell style={{ minWidth: 125 }}>
-									{schedule.pool.name}
-								</TableCell>
-								<TableCell align="center" style={{ minWidth: 250 }}>{moment(schedule.start).format('LT')} - {moment(schedule.end).format('LT')} with {schedule.instructor.name}</TableCell>
-								<TableCell align="center" style={{ minWidth: 50 }}>
-									<Button className={classes.button} onClick={(e) => this.onDelete(schedule.id)}>Delete</Button>
-								</TableCell>
-							</TableRow>
-						))}
+						{this.state.schedules.map(schedule => {
+							let studentName = '';
+							let reservedColor = '#fff';
+							if (schedule.registration != null) {
+								studentName = schedule.registration.student.name;
+								reservedColor = 'rgba(66,139,202, 0.5)';
+							}
+							return (
+								<TableRow key={schedule.id} style={{background: reservedColor}}>
+									<TableCell style={{ minWidth: 125 }}>
+										{schedule.pool.name}
+									</TableCell>
+									<TableCell align="center" style={{ minWidth: 250 }}>{studentName} {moment(schedule.start).format('LT')} - {moment(schedule.end).format('LT')} with {schedule.instructor.name}</TableCell>
+									<TableCell align="center" style={{ minWidth: 50 }}>
+										<Button className={classes.button} onClick={(e) => this.onDelete(schedule.id)}>Delete</Button>
+									</TableCell>
+								</TableRow>
+							)
+						})}
 					</TableBody>
 				</Table>
 				<br />
