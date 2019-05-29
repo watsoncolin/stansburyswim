@@ -19,6 +19,7 @@ using Serilog.Sinks.Elasticsearch;
 using Serilog.Exceptions;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using FillThePool.Core.Services;
 
 namespace FillThePool.Core
 {
@@ -76,6 +77,7 @@ namespace FillThePool.Core
 			services.AddTransient<IEmailSender, EmailSender>();
 			services.AddTransient<ProfileService>();
 			services.AddTransient<EmailService>();
+			services.AddTransient<ScheduleService>();
 			services.Configure<EmailSenderOptions>(Configuration);
 
 			services.AddMvc()

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FillThePool.Core.Data;
+using FillThePool.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,11 @@ namespace FillThePool.Core.Api
 	public class AdminScheduleApiController : ControllerBase
     {
 		private readonly ApplicationDbContext _context;
-		public AdminScheduleApiController(ApplicationDbContext context)
+		private readonly ScheduleService _scheduleService;
+		public AdminScheduleApiController(ApplicationDbContext context, ScheduleService scheduleService)
 		{
 			_context = context;
+			_scheduleService = scheduleService;
 		}
 
 		[Route("{strDate}")]
@@ -41,7 +44,17 @@ namespace FillThePool.Core.Api
 		[HttpDelete]
 		public async Task<IActionResult> DeleteSchedule(int scheduleId)
 		{
-			var schedule = _context.Schedules.Find(scheduleId);
+			var schedule = _context.Schedules
+				.Include(s => s.Registration)
+				.Include(s=> s.Registration.Student.Profile)
+				.Where(s => s.Id == scheduleId)
+				.FirstOrDefault();
+
+			if(schedule != null && schedule.Registration != null)
+			{
+				await _scheduleService.Cancel(schedule.Registration.Student.Profile.IdentityUserId, schedule.Registration.Id);
+			}
+			
 			_context.Schedules.Remove(schedule);
 			await _context.SaveChangesAsync();
 
