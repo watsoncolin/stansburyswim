@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: dotnet publish
-  displayName: 'dotnet publish'
+  displayName: 'dotnet publish --configuration Release'
   
 - task: PublishBuildArtifacts@1
   inputs:
