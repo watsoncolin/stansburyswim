@@ -12,3 +12,9 @@ pool:
 steps:
 - script: dotnet publish
   displayName: 'dotnet publish'
+  
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/src/FillThePool.Core/bin/Release/netcoreapp2.2/publish'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
