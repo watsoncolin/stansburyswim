@@ -4,8 +4,6 @@
 		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<UserSecretsId>aspnet-FillThePool.Core-5D5F62AE-6ACA-4C28-9A8E-57AF2078E462</UserSecretsId>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 		<SpaRoot>ClientApp\</SpaRoot>
