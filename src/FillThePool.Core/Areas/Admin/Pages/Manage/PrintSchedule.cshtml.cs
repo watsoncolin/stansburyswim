@@ -36,12 +36,12 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
 		public class Filters
 		{
+			public bool Details { get; set; }
 			public DateTime Date { get; set; }
 			public List<PoolChoice> PoolChoices { get; set; } = new List<PoolChoice>();
 			public List<InstructorChoice> InstructorChoices { get; set; } = new List<InstructorChoice>();
 		}
-
-
+		
 
 		public async Task OnGet()
 		{

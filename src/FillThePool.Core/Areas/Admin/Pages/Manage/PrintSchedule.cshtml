@@ -47,6 +47,14 @@
 						}
 					</div>
 				</div>
+				<div class="form-row">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" asp-for="InputModel.Details" />
+						<input type="hidden" asp-for="InputModel.Details" />
+						<label class="form-check-label">Show Notes</label>
+						<span>&nbsp;</span>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -54,55 +62,111 @@
 	<br />
 	<div class="row">
 		<div class="col">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>
-							Start
-						</th>
-						<th>
-							Pool
-						</th>
-						<th>
-							Student
-						</th>
-						<th>
-							Instructor
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if (Model.Schedules.Count == 0)
-					{
+			<style>
+				td {
+					border: solid 1px #dee2e6;
+				}
+			</style>
+			@{
+				var pools = Model.Schedules.Select(s => s.Pool.Name).Distinct();
+			}
+			@foreach (var pool in pools)
+			{
+				var schedules = Model.Schedules.Where(s => s.Pool.Name == pool);
+				var instructors = schedules.Select(y => y.Instructor.Name).Distinct().OrderBy(i => i);
+				<h5>@pool</h5>
+				<table class="table">
+					<thead>
 						<tr>
-							<td colspan="4" class="text-center">
-								No schedules found
-							</td>
-						</tr>
-					}
-					@foreach (var schedule in Model.Schedules)
-					{
-						<tr>
-							<td>@schedule.Start.ToShortTimeString()</td>
-							<td>@schedule.Pool.Name</td>
-							@if (schedule.Registration == null)
+							<th>
+								Time
+							</th>
+							@foreach (var instructor in instructors)
 							{
-								<td>Available</td>
+								<th>
+									@instructor
+								</th>
 							}
-							else
-							{
-								<td>
-									@schedule.Registration.Student.Name
-									<br />
-									<small>@schedule.Registration.Student.Notes</small>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							var dates = schedules.GroupBy(s => s.Start).ToList();
+						}
+						@for (var i = 0; i < dates.Count(); i++)
+						{
+							var date = dates[i];
+							<tr>
+								<td rowspan="1">
+									@date.Key.ToShortTimeString()
 								</td>
-							}
+								@foreach (var instructor in instructors)
+								{
+									var schedule = date.FirstOrDefault(s => s.Instructor.Name == instructor);
+									if (schedule != null && schedule.Registration != null)
+									{
+										bool renderCell = true;
+										if (i > 0)
+										{
+											var previousRow = dates[i - 1].FirstOrDefault(s => s.Instructor.Name == instructor);
+											if (previousRow != null)
+											{
+												if (previousRow.Registration != null && previousRow.Registration.Student.Id == schedule.Registration.Student.Id)
+												{
+													renderCell = false;
+												}
+											}
+										}
+										@if (renderCell)
+										{
+											var rowSpan = 1;
+											if (i + rowSpan < dates.Count())
+											{
+												var nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+												while (nextRow != null && nextRow.Registration != null && nextRow.Registration.Student.Id == schedule.Registration.Student.Id)
+												{
+													rowSpan++;
+													nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+												}
+											}
 
-							<td>@schedule.Instructor.Name</td>
-						</tr>
-					}
-				</tbody>
-			</table>
+											<td rowspan="@rowSpan">
+												<div>
+													@schedule.Registration.Student.Name
+												</div>
+												@if (Model.InputModel.Details)
+												{
+													<div>
+														<small>@(DateTime.Now.Year - schedule.Registration.Student.Birthday.Year)</small>
+													</div>
+													<div>
+														<small>@schedule.Registration.Student.Ability</small>
+													</div>
+													<div>
+														<small>@schedule.Registration.Student.Notes</small>
+													</div>
+												}
+											</td>
+										}
+									}
+									else if (schedule != null && schedule.Registration == null)
+									{
+										<td rowspan="1">
+											<small>Available</small>
+										</td>
+									}
+									else if (schedule == null)
+									{
+										<td rowspan="1">
+											<small>Not scheduled</small>
+										</td>
+									}
+								}
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
 		</div>
 	</div>
 </div>
@@ -136,49 +200,103 @@
 	<br />
 	<br />
 	<br />
-	<div class="table-responsive">
+	@foreach (var pool in pools)
+	{
+		var schedules = Model.Schedules.Where(s => s.Pool.Name == pool);
+		var instructors = schedules.Select(y => y.Instructor.Name).Distinct().OrderBy(i => i);
+		<h5>@pool</h5>
 		<table class="table">
 			<thead>
 				<tr>
 					<th>
-						Start
+						Time
 					</th>
-					<th>
-						Pool
-					</th>
-					<th>
-						Student
-					</th>
-					<th>
-						Instructor
-					</th>
+					@foreach (var instructor in instructors)
+					{
+						<th>
+							@instructor
+						</th>
+					}
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (var schedule in Model.Schedules)
+				@{
+					var dates = schedules.GroupBy(s => s.Start).ToList();
+				}
+				@for (var i = 0; i < dates.Count(); i++)
 				{
-				<tr>
-					<td>@schedule.Start.ToShortTimeString()</td>
-					<td>@schedule.Pool.Name</td>
-					@if (schedule.Registration == null)
-					{
-						<td>Available</td>
-					}
-					else
-					{
-						<td>
-							@schedule.Registration.Student.Name
-							<br />
-							<small>@schedule.Registration.Student.Notes</small>
+					var date = dates[i];
+					<tr>
+						<td rowspan="1">
+							@date.Key.ToShortTimeString()
 						</td>
-					}
+						@foreach (var instructor in instructors)
+						{
+							var schedule = date.FirstOrDefault(s => s.Instructor.Name == instructor);
+							if (schedule != null && schedule.Registration != null)
+							{
+								bool renderCell = true;
+								if (i > 0)
+								{
+									var previousRow = dates[i - 1].FirstOrDefault(s => s.Instructor.Name == instructor);
+									if (previousRow != null)
+									{
+										if (previousRow.Registration != null && previousRow.Registration.Student.Id == schedule.Registration.Student.Id)
+										{
+											renderCell = false;
+										}
+									}
+								}
+								@if (renderCell)
+								{
+									var rowSpan = 1;
+									if (i + rowSpan < dates.Count())
+									{
+										var nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+										while (nextRow != null && nextRow.Registration != null && nextRow.Registration.Student.Id == schedule.Registration.Student.Id)
+										{
+											rowSpan++;
+											nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+										}
+									}
 
-					<td>@schedule.Instructor.Name</td>
-				</tr>
+									<td rowspan="@rowSpan">
+										<div>
+											@schedule.Registration.Student.Name
+										</div>
+										@if (Model.InputModel.Details)
+										{
+											<div>
+												<small>@(DateTime.Now.Year - schedule.Registration.Student.Birthday.Year)</small>
+											</div>
+											<div>
+												<small>@schedule.Registration.Student.Ability</small>
+											</div>
+											<div>
+												<small>@schedule.Registration.Student.Notes</small>
+											</div>
+										}
+									</td>
+								}
+							}
+							else if (schedule != null && schedule.Registration == null)
+							{
+								<td rowspan="1">
+									<small>Available</small>
+								</td>
+							}
+							else if (schedule == null)
+							{
+								<td rowspan="1">
+									<small>Not scheduled</small>
+								</td>
+							}
+						}
+					</tr>
 				}
 			</tbody>
 		</table>
-	</div>
+	}
 }
 
 
