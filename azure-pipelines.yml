@@ -10,8 +10,8 @@ pool:
   vmImage: 'windows-2019'
 
 steps:
-- script: dotnet publish
-  displayName: 'dotnet publish --configuration Release'
+- script: dotnet publish --configuration Release
+  displayName: 'dotnet publish'
   
 - task: PublishBuildArtifacts@1
   inputs:
