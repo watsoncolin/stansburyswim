@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FillThePool.Core.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace FillThePool.Core.Api
 {
 	[Route("api/schedule")]
 	[ApiController]
+	[Authorize]
 	public class ScheduleApiController : ControllerBase
 	{
 		private readonly UserManager<IdentityUser> _userManager;
@@ -204,6 +206,7 @@ namespace FillThePool.Core.Api
 						Name = s.Registration.Student.Name
 					}
 				})
+				.OrderBy(s => s.LessonTime)
 				.ToList();
 
 			return schedules;
