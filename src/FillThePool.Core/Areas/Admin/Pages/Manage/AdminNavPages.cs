@@ -13,9 +13,10 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
         public static string Pools => "Pools";
 
-        public static string Schedules => "Schedules";
+		public static string Schedules => "Schedules";
+		public static string Waitlist => "Waitlist";
 
-        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+		public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
 		public static string UsersNavClass(ViewContext viewContext) => PageNavClass(viewContext, Users);
 
@@ -23,9 +24,10 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
         public static string PoolsNavClass(ViewContext viewContext) => PageNavClass(viewContext, Pools);
 
-        public static string SchedulesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Schedules);
+		public static string SchedulesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Schedules);
+		public static string WaitlistNavClass(ViewContext viewContext) => PageNavClass(viewContext, Waitlist);
 
-        private static string PageNavClass(ViewContext viewContext, string page)
+		private static string PageNavClass(ViewContext viewContext, string page)
         {
             var activePage = viewContext.ViewData["ActivePage"] as string
                 ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);

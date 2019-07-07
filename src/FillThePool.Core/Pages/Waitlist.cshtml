@@ -1,0 +1,37 @@
+﻿@page
+@model FillThePool.Core.Pages.WaitlistModel
+@{
+	ViewData["Title"] = "Wait list";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1 class="display-4 text-center">Wait list</h1>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<p>
+				Thank you for your interest in Stansbury Swim.  We have sold out of lessons for the season.
+				If you would like to be added to a wait list to purchase lesson credits if they become available check the box below (preference will be given to current students).
+				<br />
+				You'll receive an email when you can purchase credits again.
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<form method="post">
+				<div asp-validation-summary="All"></div>
+				<div class="form-group form-check">
+					<input class="form-check-input" asp-for="OnWaitList">
+					<label asp-for="OnWaitList"></label>
+				</div>
+				<input type="submit" value="Save" class="btn btn-primary" asp-page-handler="SaveWaitlist" />
+			</form>
+		</div>
+	</div>
+</div>

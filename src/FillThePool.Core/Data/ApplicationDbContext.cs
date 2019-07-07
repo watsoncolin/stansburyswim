@@ -17,6 +17,8 @@ namespace FillThePool.Core.Data
 		public DbSet<Schedule> Schedules { get; set; }
 		public DbSet<Registration> Registrations { get; set; }
 		public DbSet<EmailTemplate> EmailTemplates { get; set; }
+		public DbSet<Settings> Settings { get; set; }
+		public DbSet<Waitlist> Waitlist { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)

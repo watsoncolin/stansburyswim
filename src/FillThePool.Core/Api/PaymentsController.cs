@@ -60,6 +60,20 @@ namespace FillThePool.Core.Api
 			{
 				return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 			}
+			var profile = _context.Profiles.FirstOrDefault(p => p.IdentityUserId == user.Id);
+
+			var settings = _context.Settings.FirstOrDefault();
+			if (settings != null)
+			{
+				if (settings.WaitlistEnabled)
+				{
+					var userWaitlist = _context.Waitlist.FirstOrDefault(w => w.ProfileId == profile.Id);
+					if (userWaitlist == null || !userWaitlist.AllowedPurchase)
+					{
+						return RedirectToPage("/waitlist");
+					}
+				}
+			}
 
 			OrdersGetRequest request = new OrdersGetRequest(payment.OrderId);
 
@@ -98,7 +112,6 @@ namespace FillThePool.Core.Api
 
 			AmountWithBreakdown amount = result.PurchaseUnits[0].Amount;
 
-			var profile = _context.Profiles.FirstOrDefault(p => p.IdentityUserId == user.Id);
 
 			if (profile == null)
 			{
@@ -178,6 +191,14 @@ namespace FillThePool.Core.Api
 			// Send email
 			await _emailService.SendPurchaseEmail(user);
 
+
+			// Remove user from waitlist if the user is on it
+			var waitlist = _context.Waitlist.FirstOrDefault(w => w.ProfileId == profile.Id);
+			if (waitlist != null)
+			{
+				_context.Waitlist.Remove(waitlist);
+				await _context.SaveChangesAsync();
+			}
 
 			return Ok();
 		}

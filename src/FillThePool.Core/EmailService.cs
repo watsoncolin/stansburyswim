@@ -125,5 +125,26 @@ namespace FillThePool.Core
 
 			await client.SendEmailAsync(msg);
 		}
+		public async Task SendWaitlistEmail(int profileId)
+		{
+			var client = new SendGridClient(_senderOptions.SendGridKey);
+
+			var emailTemplate = _context.EmailTemplates.First(e => e.Type == "Waitlist");
+			var profile = await _context.Profiles.FirstAsync(p => p.Id == profileId);
+			var user = await _context.Users.FirstAsync(u => u.Id == profile.IdentityUserId);
+
+			var body = emailTemplate.Html;
+			var msg = new SendGridMessage
+			{
+				From = new EmailAddress("info@stansburyswim.com", "Stansbury Swim"),
+				Subject = emailTemplate.Subject,
+				HtmlContent = body,
+			};
+			msg.AddTo(new EmailAddress(user.Email));
+
+			msg.SetClickTracking(true, true);
+
+			await client.SendEmailAsync(msg);
+		}
 	}
 }

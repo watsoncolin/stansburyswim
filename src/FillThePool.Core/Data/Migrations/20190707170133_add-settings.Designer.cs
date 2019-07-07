@@ -4,14 +4,16 @@ using FillThePool.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FillThePool.Core.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190707170133_add-settings")]
+    partial class addsettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace FillThePool.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("WaitlistEnabled");
+                    b.Property<bool>("WaitListEnabled");
 
                     b.HasKey("Id");
 
@@ -272,27 +274,6 @@ namespace FillThePool.Core.Data.Migrations
                     b.HasIndex("ProfileId");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("FillThePool.Core.Data.Waitlist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("AllowedPurchase");
-
-                    b.Property<DateTime>("AllowedPurchaseDate");
-
-                    b.Property<DateTime>("DateJoined");
-
-                    b.Property<int>("ProfileId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("Waitlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -515,14 +496,6 @@ namespace FillThePool.Core.Data.Migrations
                 });
 
             modelBuilder.Entity("FillThePool.Core.Data.Transaction", b =>
-                {
-                    b.HasOne("FillThePool.Core.Data.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("FillThePool.Core.Data.Waitlist", b =>
                 {
                     b.HasOne("FillThePool.Core.Data.Profile", "Profile")
                         .WithMany()
