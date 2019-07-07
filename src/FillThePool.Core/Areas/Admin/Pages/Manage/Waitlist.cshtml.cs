@@ -80,7 +80,7 @@ namespace FillThePool.Core.Areas.Admin.Pages
 			if(!allowPurchase.AllowedPurchase)
 			{
 				waitlist.AllowedPurchase = false;
-				waitlist.AllowedPurchaseDate = default;
+				waitlist.AllowedPurchaseDate = default(DateTime);
 				await _context.SaveChangesAsync();
 			}
 
