@@ -36,7 +36,7 @@ namespace FillThePool.Core.Pages
 			{
 				if (settings.WaitlistEnabled && user == null)
 				{
-					return RedirectToPage("/waitlist");
+					return Page();
 				}
 
 				if (settings.WaitlistEnabled)
