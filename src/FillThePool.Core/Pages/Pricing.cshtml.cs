@@ -34,7 +34,12 @@ namespace FillThePool.Core.Pages
 			var settings = _context.Settings.FirstOrDefault();
 			if(settings != null)
 			{
-				if(settings.WaitlistEnabled)
+				if (settings.WaitlistEnabled && user == null)
+				{
+					return RedirectToPage("/waitlist");
+				}
+
+				if (settings.WaitlistEnabled)
 				{
 					var profile = _context.Profiles.FirstOrDefault(p => p.IdentityUserId == user.Id);
 					var waitlist = _context.Waitlist.FirstOrDefault(w => w.ProfileId == profile.Id);
