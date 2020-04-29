@@ -1,0 +1,31 @@
+﻿@page
+@model FillThePool.Core.Pages.PoolsModel
+@{
+	ViewData["Title"] = "Pools";
+}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1 class="display-4 text-center">Pools</h1>
+		</div>
+	</div>
+</div>
+<div class="container">
+	@foreach(var pool in Model.Pools)
+	{
+	<div>
+		<div class="card" style="margin-bottom:50px">
+			<img src="@pool.Image" class="card-img-top" alt="@pool.Name">
+			<div class="card-body">
+				<p class="card-text">
+					@pool.Details
+				</p>
+				<hr />
+				<p class="card-text">
+					@pool.Address
+				</p>
+			</div>
+		</div>
+	</div>
+	}
+</div>

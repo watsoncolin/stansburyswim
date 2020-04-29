@@ -16,6 +16,10 @@
 		<None Remove="$(SpaRoot)**" />
 		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\uploads\10reasons-why-swim_aa2015.jpg" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.App" />
