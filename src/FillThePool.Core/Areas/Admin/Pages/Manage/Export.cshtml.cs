@@ -27,10 +27,10 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 				.OrderBy(p => p.LastName)
 				.ToList();
 
-			string result = "FirstName,LastName,Email,Balance \n";
+			string result = "FirstName,LastName,Email,Phone,Balance \n";
 			foreach (var profile in profiles)
 			{
-				result += string.Format("{0},{1},{2},{3}\n", profile.FirstName, profile.LastName, profile.IdentityUser.Email,
+				result += string.Format("{0},{1},{2},{3},{4}\n", profile.FirstName, profile.LastName, profile.IdentityUser.Email, profile.Phone,
 					Utilities.GetAvailableCredits(_context, profile.IdentityUserId));
 			}
 
