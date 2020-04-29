@@ -10,12 +10,14 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 {
 	public class EditModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnGet()
         {
-			if(!User.Claims.Any(c => c.Type == "Admin"))
-			{
-
+			if(User.Claims.Any(c => c.Type == "Admin" && c.Value != "Full"))
+            {
+                return new RedirectToPageResult("/Manage/PrintSchedule");
 			}
+
+            return Page();
         }
     }
 }

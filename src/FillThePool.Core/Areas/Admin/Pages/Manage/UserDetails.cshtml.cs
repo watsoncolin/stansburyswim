@@ -133,5 +133,23 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
 			return RedirectToPage("./UserDetails", new { profileId = NewTransaction.ProfileId });
 		}
+		public async Task<IActionResult> OnPostAddInstructorClaimAsync(int profileId)
+		{
+			var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+			var user = await _userManager.FindByIdAsync(profile.IdentityUserId);
+
+			await _userManager.AddClaimAsync(user, new Claim("Admin", "Instructor"));
+
+			return RedirectToPage("./UserDetails", new { profileId = NewTransaction.ProfileId });
+		}
+		public async Task<IActionResult> OnPostRemoveInstructorClaimAsync(int profileId)
+		{
+			var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == profileId);
+			var user = await _userManager.FindByIdAsync(profile.IdentityUserId);
+
+			await _userManager.RemoveClaimAsync(user, new Claim("Admin", "Instructor"));
+
+			return RedirectToPage("./UserDetails", new { profileId = NewTransaction.ProfileId });
+		}
 	}
 }

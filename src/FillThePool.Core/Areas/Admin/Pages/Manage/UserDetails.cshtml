@@ -21,13 +21,22 @@
 					<sapn class="form-control-plaintext">
 						@Model.Profile.FirstName @Model.Profile.LastName
 						<button class="btn btn-link" type="submit" asp-page-handler="LoginAsUser" asp-all-route-data="parms">Login as user</button>
-						@if (Model.Claims.Any(c => c.Type == "Admin"))
+						@if (Model.Claims.Any(c => c.Type == "Admin" && c.Value == "Full"))
 						{
 							<button class="btn btn-link" type="submit" asp-page-handler="RemoveAdminClaim" asp-all-route-data="parms">Remove Admin Privlege</button>
 						}
 						else
 						{
 							<button class="btn btn-link" type="submit" asp-page-handler="AddAdminClaim" asp-all-route-data="parms">Make User an Administrator</button>
+						}
+
+						@if (Model.Claims.Any(c => c.Type == "Admin" && c.Value == "Instructor"))
+						{
+							<button class="btn btn-link" type="submit" asp-page-handler="RemoveInstructorClaim" asp-all-route-data="parms">Remove Instructor Privlege</button>
+						}
+						else
+						{
+							<button class="btn btn-link" type="submit" asp-page-handler="AddInstructorClaim" asp-all-route-data="parms">Make User an Instructor</button>
 						}
 					</sapn>
 				</div>
