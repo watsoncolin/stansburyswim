@@ -35,6 +35,7 @@ namespace FillThePool.Core
 				HtmlContent = emailTemplate.Html,
 			};
 			msg.AddTo(new EmailAddress(user.Email));
+			msg.AddBccs(_senderOptions.BccEmails.Select(e => new EmailAddress(e)).ToList());
 
 			msg.SetClickTracking(true, true);
 
@@ -55,6 +56,7 @@ namespace FillThePool.Core
 				HtmlContent = emailTemplate.Html,
 			};
 			msg.AddTo(new EmailAddress(user.Email));
+			msg.AddBccs(_senderOptions.BccEmails.Select(e => new EmailAddress(e)).ToList());
 
 			msg.SetClickTracking(true, true);
 
@@ -120,6 +122,7 @@ namespace FillThePool.Core
 				HtmlContent = body,
 			};
 			msg.AddTo(new EmailAddress(user.Email));
+			msg.AddBccs(_senderOptions.BccEmails.Select(e => new EmailAddress(e)).ToList());
 
 			msg.SetClickTracking(true, true);
 
@@ -141,6 +144,7 @@ namespace FillThePool.Core
 				HtmlContent = body,
 			};
 			msg.AddTo(new EmailAddress(user.Email));
+			msg.AddBccs(_senderOptions.BccEmails.Select(e => new EmailAddress(e)).ToList());
 
 			msg.SetClickTracking(true, true);
 

@@ -13,6 +13,7 @@ namespace FillThePool.Core
 	{
 		public string SendGridUser { get; set; }
 		public string SendGridKey { get; set; }
+		public string[] BccEmails { get; set; }
 	}
 
 	public class EmailSender : IEmailSender
@@ -40,6 +41,7 @@ namespace FillThePool.Core
 				HtmlContent = message,
 			};
 			msg.AddTo(new EmailAddress(email));
+			msg.AddBccs(Options.BccEmails.Select(e => new EmailAddress(e)).ToList());
 
 			msg.SetClickTracking(true, true);
 
