@@ -43,7 +43,7 @@ namespace FillThePool.Core.Pages
 				_context.Waitlist.Remove(waitlist);
 			}
 
-			if (OnWaitList)
+			if (OnWaitList && waitlist == null)
 			{
 				_context.Waitlist.Add(new Waitlist
 				{
