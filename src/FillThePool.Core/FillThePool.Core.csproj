@@ -43,6 +43,10 @@
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="wwwroot\img\favicon\" />
+	</ItemGroup>
 
 
 	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
