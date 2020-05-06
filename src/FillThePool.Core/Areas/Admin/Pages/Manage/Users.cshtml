@@ -7,7 +7,8 @@
 }
 
 <h4>@ViewData["Title"]</h4>
-<a asp-page="./Export" target="_blank">Export</a>
+<a asp-page="./Export" target="_blank">Export All</a>
+<a asp-page="./Export" asp-route-active="true" target="_blank">Export Active</a>
 <table class="table">
 	<thead>
 		<tr>
@@ -27,7 +28,7 @@
 		@foreach (var p in Model.Profiles)
 		{
 			var parms = new Dictionary<string, string>
-			{
+	{
 				{ "profileId", p.Profile.Id.ToString() }
 			};
 			<tr>

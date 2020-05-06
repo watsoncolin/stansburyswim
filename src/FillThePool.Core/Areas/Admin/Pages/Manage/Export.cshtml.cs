@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PayPalCheckoutSdk.Orders;
 
 namespace FillThePool.Core.Areas.Admin.Pages.Manage
 {
@@ -20,12 +21,25 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 			_context = context;
 		}
 
-		public ActionResult OnGet()
+		public ActionResult OnGet([FromQuery(Name = "active")] bool active)
 		{
-			var profiles = _context.Profiles
+			List<Profile> profiles;
+			if (active)
+			{
+				profiles = _context.Schedules
+					.Where(s => s.Registration != null)
+					.Select(s => s.Registration.Student.Profile)
+					.Include("IdentityUser")
+					.OrderBy(p => p.LastName)
+					.Distinct()
+					.ToList();
+			} else
+			{
+				profiles = _context.Profiles
 				.Include("IdentityUser")
 				.OrderBy(p => p.LastName)
 				.ToList();
+			}
 
 			string result = "FirstName,LastName,Email,Phone,Balance \n";
 			foreach (var profile in profiles)
