@@ -50,11 +50,34 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account.Manage
 
 		public class InputModel
 		{
+			private string _userName;
+			private string _email;
+
 			[Required]
-			public string Username { get; set; }
+			public string Username
+			{
+				get
+				{
+					return _userName;
+				}
+				set
+				{
+					_userName = value.Trim();
+				}
+			}
 			[Required]
 			[EmailAddress]
-			public string Email { get; set; }
+			public string Email
+			{
+				get
+				{
+					return _email;
+				}
+				set
+				{
+					_email = value.Trim();
+				}
+			}
 			[Phone]
 			[Required]
 			[Display(Name = "Phone number")]
