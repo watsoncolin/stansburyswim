@@ -16,7 +16,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
         {
         }
 
-        public async Task<IActionResult> OnGetAsync(string userId, string code)
+        public async Task<IActionResult> OnGetAsync()
         {
             return await Task.FromResult(Page());
         }

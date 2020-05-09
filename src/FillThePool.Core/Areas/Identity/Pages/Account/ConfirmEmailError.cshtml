@@ -1,0 +1,16 @@
+﻿@page
+@model ConfirmEmailErrorModel
+@{
+    ViewData["Title"] = "Confirm email error";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div>
+	<p>
+		There was an error while confirming your email address.
+	</p>
+	<form method="post">
+		<input type="hidden" asp-for="@Model.UserId" name="UserId" />
+		<button type="submit" class="btn btn-primary">Re-send email</button>
+	</form>
+</div>

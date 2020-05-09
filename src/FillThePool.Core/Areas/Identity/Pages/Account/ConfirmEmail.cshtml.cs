@@ -35,12 +35,15 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
+            if (!result.Succeeded && result.Errors.Any(e => e.Code == "InvalidToken"))
+            {
+                return RedirectToPage("ConfirmEmailError", new { userId });
+            } else if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");
             }
 
-			await _emailService.SendRegistrationEmail(user);
+            await _emailService.SendRegistrationEmail(user);
 
             return Page();
         }
