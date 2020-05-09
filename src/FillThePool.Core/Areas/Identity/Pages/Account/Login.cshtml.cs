@@ -40,9 +40,20 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            private string _email;
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string Email
+            {
+                get
+                {
+                    return _email;
+                }
+                set
+                {
+                    _email = value.Trim();
+                }
+            }
 
             [Required]
             [DataType(DataType.Password)]
@@ -93,7 +104,7 @@ namespace FillThePool.Core.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
