@@ -25,7 +25,7 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 		}
 
 
-		public void OnGet(string sort = "LastName", bool ascending = true, int skip = 0, int take = 500)
+		public void OnGet(string sort = "LastName", bool ascending = true, int skip = 0, int take = 1000)
 		{
 			var profiles = _context.Profiles
 				.Include("IdentityUser")
