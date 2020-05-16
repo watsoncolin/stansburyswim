@@ -18,6 +18,7 @@ namespace FillThePool.Core.Areas.Admin.Pages
 
 
 		public IQueryable<UserWithManyCredits> UsersWithManyCredits { get; set; }
+		public int ManyCreditsCount { get; set; } = 10;
 		public int LessonCreditCount { get; set; }
 		public int AvailableLessons { get; set; }
 		public int ScheduledCount { get; set; }
@@ -39,7 +40,7 @@ namespace FillThePool.Core.Areas.Admin.Pages
 				{
 					Balance = t.Sum(x => x.LessonCredit),
 					Profile = t.Key,
-				}).Where(t => t.Balance > 20);
+				}).Where(t => t.Balance >= ManyCreditsCount);
 			}
 		}
 	}
