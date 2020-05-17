@@ -125,7 +125,14 @@
 												while (nextRow != null && nextRow.Registration != null && nextRow.Registration.Student.Id == schedule.Registration.Student.Id)
 												{
 													rowSpan++;
-													nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+													if (rowSpan + i < dates.Count())
+													{
+														nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+													}
+													else
+													{
+														nextRow = null;
+													}
 												}
 											}
 
@@ -255,7 +262,14 @@
 										while (nextRow != null && nextRow.Registration != null && nextRow.Registration.Student.Id == schedule.Registration.Student.Id)
 										{
 											rowSpan++;
-											nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+											if (rowSpan + i < dates.Count())
+											{
+												nextRow = dates[i + rowSpan].FirstOrDefault(s => s.Instructor.Name == instructor);
+											}
+											else
+											{
+												nextRow = null;
+											}
 										}
 									}
 
