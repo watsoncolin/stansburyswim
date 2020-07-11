@@ -66,6 +66,8 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 				.Include(s => s.Instructor)
 				.Include(s => s.Registration)
 				.Include(s => s.Registration.Student)
+				.Include(s => s.Registration.Student.Profile)
+				.Include(s => s.Registration.Student.Profile.IdentityUser)
 				.Where(s => s.Start > beginRange && s.End < endRange);
 
 			if (filters.PoolChoices.Any(p => p.Selected))

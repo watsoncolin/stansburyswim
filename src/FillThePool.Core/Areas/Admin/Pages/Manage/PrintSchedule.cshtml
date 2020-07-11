@@ -149,7 +149,16 @@
 														<small>@schedule.Registration.Student.Ability</small>
 													</div>
 													<div>
+														<div>Notes:</div>
 														<small>@schedule.Registration.Student.Notes</small>
+													</div>
+													<div>
+														<div>Contact Details:</div>
+														<small>@schedule.Registration.Student.Profile.FirstName @schedule.Registration.Student.Profile.LastName</small>
+														<br />
+														<small>@schedule.Registration.Student.Profile.Phone</small>
+														<br />
+														<small>@schedule.Registration.Student.Profile.IdentityUser.Email</small>
 													</div>
 												}
 											</td>
@@ -277,6 +286,7 @@
 										<div>
 											@schedule.Registration.Student.Name
 										</div>
+
 										@if (Model.InputModel.Details)
 										{
 											<div>
@@ -287,6 +297,12 @@
 											</div>
 											<div>
 												<small>@schedule.Registration.Student.Notes</small>
+											</div>
+											<div>
+												Contact Details:
+												<small>@schedule.Registration.Student.Profile.FirstName @schedule.Registration.Student.Profile.LastName</small>
+												<small>@schedule.Registration.Student.Profile.Phone</small>
+												<small>@schedule.Registration.Student.Profile.IdentityUser.Email</small>
 											</div>
 										}
 									</td>
