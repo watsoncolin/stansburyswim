@@ -1,50 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import StepContent from "@material-ui/core/StepContent";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import deepPurple from "@material-ui/core/colors/deepPurple";
 import AvailableCredits from "./AvailableCredits";
-import PoolStep from "./steps/PoolStep";
-import DateStep from "./steps/DateStep";
-import LessonStep from "./steps/LessonStep";
-import ConfirmStep from "./steps/ConfirmStep";
 import UpcommingLessons from "./UpcommingLessons";
 import * as moment from "moment";
-import ScheduleTable from "./ScheduleTable";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 let headers = new Headers();
 headers.append("pragma", "no-cache");
 headers.append("cache-control", "no-cache");
 
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-function getSteps() {
-  return [
-    "Select Pool",
-    "Select date",
-    "Pick your instructor and lesson time",
-    "Confirm",
-  ];
-}
-
-class Schedule extends React.Component {
+class ScheduleTable extends React.Component {
   state = {
     activeStep: 0,
     scheduleData: {
@@ -98,6 +78,16 @@ class Schedule extends React.Component {
 
     if (scheduleData.pools) {
       return scheduleData.pools;
+    }
+
+    return [];
+  };
+
+  getInstructors = () => {
+    const { scheduleData } = this.state;
+
+    if (scheduleData.lessons) {
+      return scheduleData.lessons.map((l) => l.instructor);
     }
 
     return [];
@@ -172,18 +162,6 @@ class Schedule extends React.Component {
     return [];
   };
 
-  handleNext = () => {
-    this.setState((state) => ({
-      activeStep: state.activeStep + 1,
-    }));
-  };
-
-  handleBack = () => {
-    this.setState((state) => ({
-      activeStep: state.activeStep - 1,
-    }));
-  };
-
   handleFinish = async () => {
     let allSuccess = true;
     for (let lesson of this.state.lessons) {
@@ -216,23 +194,7 @@ class Schedule extends React.Component {
     }
   };
 
-  handleReset = () => {
-    const { scheduleData } = this.state;
-    for (let i = 0; i < scheduleData.lessons.length; i++) {
-      scheduleData.lessons[i].registration = {
-        student: {
-          id: -1,
-        },
-      };
-    }
-    this.setState({
-      activeStep: 0,
-      pool: undefined,
-      date: undefined,
-      lessons: [],
-      scheduleData,
-    });
-  };
+  handleReset = () => {};
 
   handleCancelLesson = async (registrationId) => {
     await fetch("/api/schedule/cancel/" + registrationId, {
@@ -329,18 +291,8 @@ class Schedule extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const steps = getSteps();
-    const { activeStep } = this.state;
-    const stepProps = {
-      activeStep,
-      steps,
-      handleBack: this.handleBack,
-      handleNext: this.handleNext,
-      handleFinish: this.handleFinish,
-    };
     return (
       <div>
-        <ScheduleTable {...this.props}></ScheduleTable>
         <div className="row">
           <div className="col-md-2 d-none d-md-block d-lg-none"></div>
           <div className="col">
@@ -352,66 +304,127 @@ class Schedule extends React.Component {
             </div>
             <br />
             <div className={classes.root}>
-              <Stepper activeStep={activeStep} orientation="vertical">
-                <Step>
-                  <StepLabel>Select Pool</StepLabel>
-                  <StepContent>
-                    <PoolStep
-                      onSelect={this.handlePoolSelection}
-                      pools={this.getPools()}
-                    />
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Select date</StepLabel>
-                  <StepContent>
-                    <DateStep
-                      onSelect={this.handleDateSelection}
-                      selectedDate={this.state.date}
-                      lessonDates={this.getLessonDates()}
-                      {...stepProps}
-                    />
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Pick your instructor and lesson time.</StepLabel>
-                  <StepContent>
-                    <LessonStep
-                      validationMessage={this.state.messages}
-                      lessonSort={this.state.lessonSort}
-                      sortDirection={this.state.sortDirection}
-                      onRequestSort={this.handleRequestSort}
-                      onSelect={this.handleLessonSelection}
-                      selectedDate={this.state.date}
-                      lessons={this.getLessonForDate(this.state.date)}
-                      students={this.getStudents()}
-                      {...stepProps}
-                    />
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Confirm</StepLabel>
-                  <StepContent>
-                    <Typography>How does this look?</Typography>
-                    <ConfirmStep lessons={this.state.lessons} {...stepProps} />
-                  </StepContent>
-                </Step>
-              </Stepper>
-              {activeStep === steps.length && (
-                <Paper square elevation={0} className={classes.resetContainer}>
-                  <Typography>
-                    All steps completed - you&apos;re finished
-                  </Typography>
-                  <Button
-                    onClick={this.handleReset}
-                    className={classes.button}
-                    variant="contained"
-                    color="primary"
+              <div>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="pool-helper-label">Pool</InputLabel>
+                  <Select labelId="pool-helper-label">
+                    <MenuItem value="">
+                      <em>All</em>
+                    </MenuItem>
+                    {this.getPools().map((pool) => {
+                      return <MenuItem value={pool.id}>{pool.name}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="instructor-helper-label">
+                    Instructor
+                  </InputLabel>
+                  <Select labelId="instructor-helper-label">
+                    <MenuItem value="">
+                      <em>All</em>
+                    </MenuItem>
+                    {this.getInstructors().map((instructor) => {
+                      return (
+                        <MenuItem value={instructor.id}>
+                          {instructor.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="day-of-week-helper-label">
+                    Day of week
+                  </InputLabel>
+                  <Select labelId="day-of-week-helper-label">
+                    <MenuItem value="">
+                      <em>All</em>
+                    </MenuItem>
+                    <MenuItem value={0}>Mon</MenuItem>
+                    <MenuItem value={1}>Tues</MenuItem>
+                    <MenuItem value={2}>Wed</MenuItem>
+                    <MenuItem value={3}>Thur</MenuItem>
+                    <MenuItem value={4}>Fri</MenuItem>
+                    <MenuItem value={5}>Sat</MenuItem>
+                    <MenuItem value={6}>Sun</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="date-helper-label">Date</InputLabel>
+                  <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    labelId="date-helper-label"
                   >
-                    Schedule another lesson
-                  </Button>
-                </Paper>
-              )}
+                    <div className="picker">
+                      <DatePicker label="Date" defaultValue={null} />
+                    </div>
+                  </MuiPickersUtilsProvider>
+                </FormControl>
+              </div>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Dessert (100g serving)</TableCell>
+                      <TableCell align="right">Calories</TableCell>
+                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                      <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                      <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row"></TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                      <TableCell align="right">cell</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div>
           </div>
           <div className="col-md-2 d-none d-md-block d-lg-none"></div>
@@ -428,7 +441,7 @@ class Schedule extends React.Component {
   }
 }
 
-Schedule.propTypes = {
+ScheduleTable.propTypes = {
   classes: PropTypes.object,
 };
 const styles = (theme) => ({
@@ -473,4 +486,4 @@ const styles = (theme) => ({
   },
 });
 
-export default withStyles(styles)(Schedule);
+export default withStyles(styles)(ScheduleTable);
