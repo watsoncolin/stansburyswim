@@ -340,8 +340,11 @@ class Schedule extends React.Component {
     };
     return (
       <div>
-        <ScheduleTable {...this.props}></ScheduleTable>
-        <div className="row">
+        <ScheduleTable
+          {...this.props}
+          onSelect={this.handleLessonSelection}
+        ></ScheduleTable>
+        {/* <div className="row">
           <div className="col-md-2 d-none d-md-block d-lg-none"></div>
           <div className="col">
             <h3 className="display-5 text-center">Schedule your lessons</h3>
@@ -418,11 +421,11 @@ class Schedule extends React.Component {
         </div>
         <br />
         <br />
-        <br />
-        <UpcommingLessons
+        <br /> */}
+        {/* <UpcommingLessons
           upcommingLessons={this.state.scheduleData.upcommingLessons}
           handleCancelLesson={this.handleCancelLesson}
-        />
+        /> */}
       </div>
     );
   }
@@ -432,9 +435,7 @@ Schedule.propTypes = {
   classes: PropTypes.object,
 };
 const styles = (theme) => ({
-  root: {
-    width: "90%",
-  },
+  root: {},
   button: {
     marginTop: theme.spacing.unit,
     marginRight: theme.spacing.unit,
@@ -456,7 +457,7 @@ const styles = (theme) => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 90,
   },
   avatar: {
     margin: 10,

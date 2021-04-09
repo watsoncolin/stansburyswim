@@ -10,11 +10,18 @@
 		<div class="col">
 			<h1 class="display-4 text-center">Schedule</h1>
 			<br />
+			<p style="text-align:center">Check back on May 1st</p>
 		</div>
 	</div>
-	<div id="root"></div>
+	@if (User.Claims.Any(c => c.Type == "Admin"))
+	{
+		<div id="root"></div>
+	}
 </div>
-<script>
-	const rootElement = document.getElementById('root');
-	ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
-</script>
+@if (User.Claims.Any(c => c.Type == "Admin"))
+{
+	<script>
+		const rootElement = document.getElementById('root');
+		ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
+	</script>
+}
