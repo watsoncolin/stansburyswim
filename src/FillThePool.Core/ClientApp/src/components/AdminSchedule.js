@@ -147,10 +147,9 @@ class AdminSchedule extends React.Component {
 		const instructor = this.state.instructor.id > 0 ? this.state.instructor : undefined;
 
 		const response = await fetch('/api/admin/schedule/', {
-			headers: headers,
 			cache: 'no-cache',
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { ...headers, 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 			body: JSON.stringify({
 				start: this.state.start,

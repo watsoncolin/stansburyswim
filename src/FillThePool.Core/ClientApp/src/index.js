@@ -1,10 +1,9 @@
-﻿import ReactDOM from 'react-dom';
-import React from 'react';
-import Schedule from './components/Schedule';
-import AdminSchedule from './components/AdminSchedule';
-import Profile from './components/Profile';
-import jquery from 'jquery';
-import 'babel-polyfill';
+﻿import ReactDOM from "react-dom";
+import React from "react";
+import Schedule from "./components/Schedule";
+import AdminSchedule from "./components/AdminSchedule";
+import Profile from "./components/Profile";
+import jquery from "jquery";
 window.AdminSchedule = AdminSchedule;
 window.Profile = Profile;
 window.Schedule = Schedule;
