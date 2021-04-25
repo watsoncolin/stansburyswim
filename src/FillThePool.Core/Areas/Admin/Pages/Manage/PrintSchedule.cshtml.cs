@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FillThePool.Core.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +38,7 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 		public class Filters
 		{
 			public bool Details { get; set; }
-			public DateTime Date { get; set; }
+			public string Date { get; set; }
 			public List<PoolChoice> PoolChoices { get; set; } = new List<PoolChoice>();
 			public List<InstructorChoice> InstructorChoices { get; set; } = new List<InstructorChoice>();
 		}
@@ -45,7 +46,6 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
 		public async Task OnGet()
 		{
-			InputModel.Date = DateTime.Now;
 			Schedules = await GetSchedules(InputModel);
 			InputModel.PoolChoices = await GetPools();
 			InputModel.InstructorChoices = await GetInstructors();
@@ -58,8 +58,19 @@ namespace FillThePool.Core.Areas.Admin.Pages.Manage
 
 		private async Task<List<Schedule>> GetSchedules(Filters filters)
 		{
-			var beginRange = DateTime.Parse(filters.Date.ToShortDateString());
-			var endRange = beginRange.AddHours(23).AddMilliseconds(59);
+			if (filters.Date == null)
+			{
+				filters.Date = DateTime.Now.Year + "-W" + DateTime.Now.DayOfYear / 7;
+			}
+			var weekRegex = new Regex("\\d{4}-W(\\d*)");
+			var match = weekRegex.Match(filters.Date);
+			var week = int.Parse(match.Groups[1].Value);
+
+			var now = DateTime.Now;
+			var jan1 = new DateTime(now.Year, 1, 1);
+
+			var beginRange = jan1.AddDays(-(int)jan1.DayOfWeek).AddDays((week + 1) * 7);
+			var endRange = beginRange.AddDays(7);
 
 			var query = _context.Schedules
 				.Include(s => s.Pool)

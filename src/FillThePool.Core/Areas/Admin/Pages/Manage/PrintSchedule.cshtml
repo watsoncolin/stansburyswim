@@ -18,7 +18,7 @@
 			<form method="post">
 				<div class="form-row">
 					<div class="col">
-						<input class="form-control" type="date" asp-for="InputModel.Date" />
+						<input class="form-control" type="week" asp-for="InputModel.Date" />
 					</div>
 					<div class="col">
 						<input type="submit" value="Go" class="btn btn-primary" asp-page-handler="ChangeDate" />
@@ -97,7 +97,7 @@
 							var date = dates[i];
 							<tr>
 								<td rowspan="1">
-									@date.Key.ToShortTimeString()
+									@date.Key.ToString()
 								</td>
 								@foreach (var instructor in instructors)
 								{
@@ -189,7 +189,7 @@
 @section Print {
 	<div class="row">
 		<div class="col">
-			Date: @Model.InputModel.Date.ToShortDateString()
+			Date: @Model.InputModel.Date
 		</div>
 		@if (Model.InputModel.PoolChoices.Any(i => i.Selected))
 		{
@@ -243,7 +243,7 @@
 					var date = dates[i];
 					<tr>
 						<td rowspan="1">
-							@date.Key.ToShortTimeString()
+							@date.Key.ToString()
 						</td>
 						@foreach (var instructor in instructors)
 						{
