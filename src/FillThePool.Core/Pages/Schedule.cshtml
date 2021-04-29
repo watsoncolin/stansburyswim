@@ -13,12 +13,12 @@
 			<p style="text-align:center">Check back on May 1st</p>
 		</div>
 	</div>
-	@if ((DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
+	@if (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
 	{
 		<div id="root"></div>
 	}
 </div>
-@if ((DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
+@if (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
 {
 	<script>
 		const rootElement = document.getElementById('root');
