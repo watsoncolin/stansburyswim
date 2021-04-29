@@ -59,7 +59,7 @@
 	</div>
 </div>
 
-@*@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated && (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.HasClaim((c) => c.Type == "Admin")))
 {
 	<script>
 		var style = {
@@ -78,11 +78,11 @@
 						custom_id: 'single_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '18.00',
+							value: '20.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '18.00'
+									value: '20.00'
 								}
 							}
 						},
@@ -94,7 +94,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '18.00'
+									value: '20.00'
 								}
 							}
 						]
@@ -112,11 +112,11 @@
 						custom_id: 'ten_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '150.00',
+							value: '170.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '150.00'
+									value: '170.00'
 								}
 							}
 						},
@@ -128,7 +128,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '15.00'
+									value: '17.00'
 								}
 							}
 						]
@@ -146,11 +146,11 @@
 						custom_id: 'thirty_lesson',
 						amount: {
 							currency_code: 'USD',
-							value: '390.00',
+							value: '450.00',
 							breakdown: {
 								item_total: {
 									currency_code: 'USD',
-									value: '390.00'
+									value: '450.00'
 								}
 							}
 						},
@@ -162,7 +162,7 @@
 								name: 'Swim Lesson',
 								unit_amount: {
 									currency_code: 'USD',
-									value: '13.00'
+									value: '15.00'
 								}
 							}
 						]
@@ -199,4 +199,4 @@
 			});
 		}
 	</script>
-}*@
+}

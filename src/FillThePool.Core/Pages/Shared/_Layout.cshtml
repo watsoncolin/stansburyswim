@@ -57,18 +57,22 @@
 	<script src="~/static/js/bundle.js"></script>
 </head>
 <body>
-	@*<nav class="site-header sticky-top d-print-none">
-		<div class="container d-flex flex-column flex-md-row justify-content-between">
-			<a class="py-2" asp-area="" asp-page="/Index"><img src="~/img/logo.png" style="max-width:50px" /></a>
-			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Pricing">Pricing</a>
-			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Schedule">Schedule</a>
-			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Instructors">Instructors</a>
-			<a class="py-2 d-md-inline-block" asp-area="" asp-page="/About">About</a>
-			<partial name="_LoginPartial" />
-		</div>
-	</nav>*@
 
-	@*<partial name="_CookieConsentPartial" />*@
+	@if (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.HasClaim((c) => c.Type == "Admin"))
+	{
+		<nav class="site-header sticky-top d-print-none">
+			<div class="container d-flex flex-column flex-md-row justify-content-between">
+				<a class="py-2" asp-area="" asp-page="/Index"><img src="~/img/logo.png" style="max-width:50px" /></a>
+				<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Pricing">Pricing</a>
+				<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Schedule">Schedule</a>
+				<a class="py-2 d-md-inline-block" asp-area="" asp-page="/Instructors">Instructors</a>
+				<a class="py-2 d-md-inline-block" asp-area="" asp-page="/About">About</a>
+				<partial name="_LoginPartial" />
+			</div>
+		</nav>
+
+		<partial name="_CookieConsentPartial" />
+	}
 	@{
 		var fullPage = false;
 		if (ViewBag.FullPage != null && ViewBag.FullPage)
@@ -84,7 +88,7 @@
 
 	<footer class="border-top footer text-muted d-print-none">
 		<div class="container">
-			&copy; @DateTime.Now.Year - Stansbury Swim - <a asp-area="" asp-page="/Privacy">Privacy</a> - <a asp-area="" asp-page="/Contact">Contact</a>
+			&copy; @DateTime.Now.Year - Stansbury Swim - 435-659-6307 - <a asp-area="" asp-page="/Privacy">Privacy</a> - <a asp-area="" asp-page="/Contact">Contact</a>
 		</div>
 	</footer>
 
