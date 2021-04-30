@@ -490,7 +490,22 @@ class ScheduleTable extends React.Component {
                       <TableCell>Student</TableCell>
                       <TableCell align="right">Date and Time</TableCell>
                       <TableCell align="right">Instructor</TableCell>
-                      <TableCell align="right">Pool</TableCell>
+                      <TableCell align="right">
+                        Pool
+                        <Button
+                          style={{ margin: "15px" }}
+                          variant="contained"
+                          color="primary"
+                          onClick={this.handleFinish}
+                          className={classes.button}
+                          disabled={
+                            this.state.lessons == null ||
+                            this.state.lessons.length === 0
+                          }
+                        >
+                          Schedule {this.state.lessons.length} lessons
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
