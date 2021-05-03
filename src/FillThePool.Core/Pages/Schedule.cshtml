@@ -9,19 +9,11 @@
 	<div class="row">
 		<div class="col">
 			<h1 class="display-4 text-center">Schedule</h1>
-			<br />
-			<p style="text-align:center">Check back on May 1st</p>
 		</div>
 	</div>
-	@if (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
-	{
-		<div id="root"></div>
-	}
+	<div id="root"></div>
 </div>
-@if (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.Claims.Any(c => c.Type == "Admin"))
-{
-	<script>
-		const rootElement = document.getElementById('root');
-		ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
-	</script>
-}
+<script>
+	const rootElement = document.getElementById('root');
+	ReactDOM.render(React.createElement(window.Schedule), document.getElementById('root'));
+</script>

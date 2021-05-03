@@ -59,7 +59,7 @@
 	</div>
 </div>
 
-@if (User.Identity.IsAuthenticated && (DateTime.UtcNow.AddHours(-7) > new DateTime(2021, 5, 1) || User.HasClaim((c) => c.Type == "Admin")))
+@if (User.Identity.IsAuthenticated)
 {
 	<script>
 		var style = {
