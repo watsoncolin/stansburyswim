@@ -531,7 +531,7 @@ class ScheduleTable extends React.Component {
                                 }}
                               >
                                 <MenuItem value={-1}>
-                                  <em>None</em>
+                                  <em>Select</em>
                                 </MenuItem>
                                 {this.getStudents().map((student) => (
                                   <MenuItem
