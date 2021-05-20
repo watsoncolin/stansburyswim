@@ -27,6 +27,8 @@ namespace FillThePool.Core.Areas.Admin.Pages
 		{
 			if (User.Claims.Any(c => c.Type == "Admin" && c.Value == "Full"))
 			{
+				var now = DateTime.Now;
+				now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(now, "Mountain Standard Time");
 				ActiveUsers = _context.Schedules
 					.Where(s => s.Registration != null)
 					.Select(s => s.Registration.Student.Profile)
@@ -34,7 +36,7 @@ namespace FillThePool.Core.Areas.Admin.Pages
 					.Count();
 				LessonCreditCount = _context.Transactions.Where(t => t.LessonCredit > 0).Sum((t) => t.LessonCredit);
 				ScheduledCount = _context.Transactions.Where(t => t.LessonCredit < 0).Sum((t) => Math.Abs(t.LessonCredit));
-				AvailableLessons = _context.Schedules.Where(s => s.Registration == null).Count();
+				AvailableLessons = _context.Schedules.Where(s => s.Start > now && s.Registration == null).Count();
 				UsersWithManyCredits = _context.Transactions.GroupBy(transaction => transaction.Profile).Select(t =>
 				new UserWithManyCredits
 				{
