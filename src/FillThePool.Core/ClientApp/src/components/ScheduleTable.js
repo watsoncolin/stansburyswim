@@ -25,6 +25,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import clsx from "clsx";
+import { IconButton } from "@material-ui/core";
 
 let headers = new Headers();
 headers.append("pragma", "no-cache");
@@ -400,6 +402,38 @@ class ScheduleTable extends React.Component {
     });
   };
 
+  renderDay = (date, _, dayInCurrentMonth) => {
+    const { classes } = this.props;
+    let dateClone = moment(date);
+    console.log(this.state);
+
+    let dayIsAvailable = false;
+
+    for (const lesson of this.state.scheduleData.lessons) {
+      const l = moment(lesson.time);
+      if (l.dayOfYear() === dateClone.dayOfYear()) {
+        dayIsAvailable = true;
+      }
+    }
+
+    const wrapperClassName = clsx({
+      [classes.highlight]: dayIsAvailable && dayInCurrentMonth,
+    });
+
+    const dayClassName = clsx(classes.day, {
+      [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+      [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth,
+    });
+
+    return (
+      <div className={wrapperClassName}>
+        <IconButton className={dayClassName}>
+          <span> {moment(dateClone).format("D")} </span>
+        </IconButton>
+      </div>
+    );
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -479,6 +513,7 @@ class ScheduleTable extends React.Component {
                       onChange={this.handleDateChange}
                       disablePast={true}
                       autoOk={true}
+                      renderDay={this.renderDay}
                     />
                   </MuiPickersUtilsProvider>
                 </FormControl>
@@ -699,6 +734,46 @@ const styles = (theme) => ({
   },
   image: {
     width: "100%",
+  },
+  dayWrapper: {
+    position: "relative",
+  },
+  day: {
+    width: 36,
+    height: 36,
+    fontSize: theme.typography.caption.fontSize,
+    margin: "0 2px",
+    color: "inherit",
+  },
+  customDayHighlight: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: "2px",
+    right: "2px",
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: "50%",
+  },
+  nonCurrentMonthDay: {
+    color: theme.palette.text.disabled,
+  },
+  highlightNonCurrentMonthDay: {
+    color: "#676767",
+  },
+  highlight: {
+    background: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    borderRadius: "50%",
+  },
+  firstHighlight: {
+    extend: "highlight",
+    borderTopLeftRadius: "50%",
+    borderBottomLeftRadius: "50%",
+  },
+  endHighlight: {
+    extend: "highlight",
+    borderTopRightRadius: "50%",
+    borderBottomRightRadius: "50%",
   },
 });
 
