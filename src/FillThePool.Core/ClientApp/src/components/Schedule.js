@@ -1,21 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import StepContent from "@material-ui/core/StepContent";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import deepPurple from "@material-ui/core/colors/deepPurple";
-import AvailableCredits from "./AvailableCredits";
-import PoolStep from "./steps/PoolStep";
-import DateStep from "./steps/DateStep";
-import LessonStep from "./steps/LessonStep";
-import ConfirmStep from "./steps/ConfirmStep";
-import UpcommingLessons from "./UpcommingLessons";
 import * as moment from "moment";
 import ScheduleTable from "./ScheduleTable";
 
@@ -328,16 +316,6 @@ class Schedule extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const steps = getSteps();
-    const { activeStep } = this.state;
-    const stepProps = {
-      activeStep,
-      steps,
-      handleBack: this.handleBack,
-      handleNext: this.handleNext,
-      handleFinish: this.handleFinish,
-    };
     return (
       <div>
         <ScheduleTable
