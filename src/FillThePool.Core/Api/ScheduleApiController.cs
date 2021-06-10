@@ -224,6 +224,7 @@ namespace FillThePool.Core.Api
 				Instructor = s.Instructor,
 				Time = s.Start,
 			})
+			.OrderBy(s => s.Time)
 			.ToList();
 
 			return schedules;
